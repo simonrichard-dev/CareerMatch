@@ -32,3 +32,13 @@ SECRET_KEY=ma_cle_secrète
 
 
 ### Étapes de migrations
+
+1. **Créer les fichiers, mettre à jours les fichiers migrations:**
+```bash
+$ python manage.py makemigrations
+```
+
+1. **Appliquer les fichiers migrations:**
+```bash
+$ python manage.py migrate
+```
