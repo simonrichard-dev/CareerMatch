@@ -1,60 +1,44 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
+import { Colors } from "@/constants/Colors";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { Text,
+  type TextProps,
+  StyleSheet,
+ } from "react-native";
 
-import { useThemeColor } from '@/hooks/useThemeColor';
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
-};
+export const styles = StyleSheet.create({
+  title1: {
+    fontSize: 24,
+    lineHeight: 26,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  title2: {
+    fontSize: 20,
+    lineHeight: 22,
+    fontWeight: "regular",
+    textAlign: "center",
+  },
+  field1: {
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "light",
+    backgroundColor: '#E5B65E',
+  },
+  button: {
+    fontSize: 20,
+    lineHeight: 22,
+    fontWeight: "bold",
+    backgroundColor: '#FF0000',
+  },
+})
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+type Props = TextProps & {
+  variant?: keyof typeof styles,
+  color?: keyof typeof Colors["light"]
 }
 
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});
+export function ThemedText ({variant, color, ...rest}: Props) {
+  const colors = useThemeColors()
+  return <Text style={[styles[variant ?? 'field1'], {color: colors[color ?? "title1"]}]} {...rest}/>
+}
