@@ -42,3 +42,9 @@ $ python manage.py makemigrations
 ```bash
 $ python manage.py migrate
 ```
+
+
+### Lancer les tests
+```bash
+$ python manage.py test --noinput
+```
