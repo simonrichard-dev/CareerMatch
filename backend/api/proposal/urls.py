@@ -4,6 +4,6 @@ from .views import TagViewSet
 
 
 router = DefaultRouter(trailing_slash=True)
-# router.register('', ProposalView, basename='proposal')
 router.register('tags', TagViewSet, basename='tag')
+# router.register('', ProposalViewSet, basename='proposal')
 urlpatterns = router.urls

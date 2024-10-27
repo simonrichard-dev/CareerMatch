@@ -1,0 +1,100 @@
+from backend.test import TestCase
+
+from api.user.models import User
+from api.user.tests.factories import UserFactory
+from api.user.tests.factories import UserProfileFactory
+
+
+class TestAuthentificationUser(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user_with_profile = UserFactory()
+        UserProfileFactory(user=self.user_with_profile)
+
+        self.user_no_profile = UserFactory()
+
+    def test_register(self):
+        # no data -> 400
+        resp = self.client.post('/auth/register/')
+        self.assertEqual(resp.status_code, 400)
+
+        # email already exist -> 400
+        resp = self.client.post('/auth/register/', {
+            'email': self.superuser.email,
+            'password': '0000',
+        })
+        self.assertEqual(resp.status_code, 400)
+
+        # work -> 201
+        user_data = {
+            'email': 'email_test@careermatch.com',
+            'password': '0000',
+        }
+        resp = self.client.post('/auth/register/', user_data)
+        self.assertEqual(resp.status_code, 201)
+
+        user = User.objects.get(pk=resp.data['data']['user']['id'])
+        self.assertEqual(user.email, user_data['email'])
+        self.assertIsNone(user.profile)
+
+    def test_register_profile(self):
+        # no login -> 401
+        resp = self.client.post('/auth/profile/')
+        self.assertEqual(resp.status_code, 401)
+
+        profile_data = {
+            'first_name': 'Bob',
+            'last_name': 'Bibi',
+        }
+        self.assertIsNone(self.user_no_profile.profile)
+        self.assertIsNotNone(self.user_with_profile.profile)
+
+        # have already a profile -> 403
+        self.client.login(self.user_with_profile)
+        resp = self.client.post('/auth/profile/', profile_data)
+        self.assertEqual(resp.status_code, 403)
+
+        # work -> 201
+        self.client.login(self.user_no_profile)
+        resp = self.client.post('/auth/profile/', profile_data)
+        self.assertEqual(resp.status_code, 201)
+
+        user = User.get_user(resp.data['data']['user']['id'])
+        profile = user.profile
+
+        self.assertIsNotNone(profile)
+        for key in [
+            'first_name',
+            'last_name',
+        ]:
+            with self.subTest(key=key):
+                self.assertEqual(getattr(profile, key), profile_data[key])
+
+    def test_update_profile(self):
+        # no login -> 401
+        resp = self.client.post('/auth/profile/')
+        self.assertEqual(resp.status_code, 401)
+
+        profile_data = {
+            'first_name': 'Bob',
+        }
+
+        # Not have a profile -> 403
+        self.client.login(self.user_no_profile)
+        resp = self.client.put('/auth/profile/', profile_data)
+        self.assertEqual(resp.status_code, 403)
+
+        # work -> 201
+        self.client.login(self.user_with_profile)
+        resp = self.client.put('/auth/profile/', profile_data)
+        self.assertEqual(resp.status_code, 201)
+
+        user = User.get_user(resp.data['data']['user']['id'])
+        profile = user.profile
+
+        self.assertIsNotNone(profile)
+        for key in [
+            'first_name',
+        ]:
+            with self.subTest(key=key):
+                self.assertEqual(getattr(profile, key), profile_data[key])

@@ -5,6 +5,11 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 
 class UserProfile(models.Model):
+    class Meta:
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+        ordering = ('-user__created_at',)
+
     user = models.OneToOneField("api.User", on_delete=models.CASCADE)
 
     first_name = models.CharField(
@@ -24,6 +29,9 @@ class UserProfile(models.Model):
             return UserProfile.objects.get(user_id=user_id)
         except UserProfile.DoesNotExist:
             return None
+    
+    def __str__(self):
+        return f'[UserProfile {self.user.id} {self.user.email}]'
 
 
 class UserManager(BaseUserManager):
@@ -44,6 +52,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        ordering = ('-created_at',)
+
     email = models.EmailField(
         verbose_name="Email",
         unique=True
@@ -79,4 +92,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         return True
     
     def __str__(self):
-        return f'[User {self.uid} {self.email}]'
+        return f'[User {self.id} {self.email}]'
