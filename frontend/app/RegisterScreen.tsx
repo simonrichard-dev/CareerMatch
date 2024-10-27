@@ -1,5 +1,3 @@
-// frontend/app/screens/RegisterScreen.tsx
-
 import React from 'react';
 import { SafeAreaView, View, StyleSheet } from "react-native";
 import Button from "@/components/Button";
@@ -10,8 +8,16 @@ import Row from "@/components/Row";
 import ThemedText from "@/components/ThemedText";
 import { Colors } from '@/constants/Colors';
 import { Styles } from '@/constants/Styles';
+import { useNavigation } from 'expo-router';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type NavigationProp = StackNavigationProp<{
+  PersonalInfoScreen: undefined;
+}>;
 
 export default function RegisterScreen() {
+  const navigation = useNavigation<NavigationProp>(); // Initialiser la navigation
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors.light.tint }]}>
       <Row style={styles.header}>
@@ -20,7 +26,12 @@ export default function RegisterScreen() {
       <Card style={[styles.card, Styles.field1]}>
         <Email />
         <Password />
-        <Button title="CONTINUER" onPress={() => console.log("Bouton cliqué !")} />
+        <Button
+          title="CONTINUER"
+          onPress={() => navigation.navigate("PersonalInfoScreen")} // Navigation vers l'écran suivant
+          variant="button"
+          color="button_bg"
+        />
       </Card>
     </SafeAreaView>
   );
@@ -34,11 +45,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.tint,
   },
   header: {
-    ...Styles.title1, // Utilise le style du titre 1 pour le header
+    ...Styles.title1,
     padding: 10,
   },
   card: {
-    ...Styles.field1, // Utilise le style de champ 1 pour le Card
+    ...Styles.field1,
     padding: 20,
     borderRadius: 8,
   },

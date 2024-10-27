@@ -24,6 +24,9 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+
+      {/* Header */}
+
       <Row style={[styles.header, { backgroundColor: colors.title2}]}>
         <Image 
           source={require("@/assets/images/logo.png")} 
@@ -37,19 +40,27 @@ export default function LoginScreen() {
           <ThemedText variant="button" color="button">S'inscrire</ThemedText>
         </TouchableOpacity>
       </Row>
+
+    {/* Body */}
+      <Card style={[styles.card]}>
       <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
         <ThemedText variant="title2" color="title2">Connexion</ThemedText>
       </Row>
-      <Card style={[styles.card]}>
         <Email variant="field1" color="field1" />
-        <Password variant="field1" color="field1" />
-        <Button
+        <Password variant="field1" color="field1" />        
+      </Card>
+
+    {/* Footer */}
+      
+      <Card>
+      <Button
           title="SE CONNECTER"
-          onPress={() => console.log("Connexion !")}
+          onPress={() => console.log("Connected !")}
           variant="button"
           color="button_bg"
         />
       </Card>
+      
     </SafeAreaView>
   );
 }
@@ -63,17 +74,20 @@ const styles = StyleSheet.create({
   header: {
     padding: hp('2%'),
     backgroundColor: "#D3D4D5",
-    width: wp('80%'),
+    width: wp('85%'),
     justifyContent: 'space-between', // Ajoute cet élément pour espacer le logo et le bouton
     flexDirection: 'row', // Assure-toi que les éléments sont alignés horizontalement
   },
+  body: {},
+  footer: {},
   button: {
     padding: 10, // Ajuste le padding selon tes besoins
+    
   },
   title: {
     padding: hp('1.5%'),
     backgroundColor: "#FF0000",
-    width: wp('80%'),
+    width: wp('85%'),
   },
   card: {
     backgroundColor: "#00FF00",

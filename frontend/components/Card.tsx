@@ -8,13 +8,11 @@ const Card = ({ style, ...rest }: Props) => (
 );
 
 const styles: ViewStyle = {
-  borderRadius: 12,
   alignItems: 'center',
   justifyContent: "space-between",
-  width: 340,
-  margin: 10,
   gap: 10,
   padding: 10,
+  width: "auto",
 };
 
 export default Card;

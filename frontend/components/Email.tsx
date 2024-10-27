@@ -4,6 +4,8 @@ import { StyleSheet, TextInput, View, type TextProps } from 'react-native';
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 type Props = TextProps & {
   variant?: keyof typeof Styles,
@@ -32,12 +34,12 @@ const Email = ({ variant = "field1", color = "field1_bg", ...rest }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 340,
+    width: wp('85%'),
     height: 52,
     borderRadius: 12,
   },
   input: {
-    width: 340,
+    width: wp('85%'),
     height: 52,
     paddingHorizontal: 10,
     borderRadius: 12,
