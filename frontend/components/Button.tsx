@@ -1,7 +1,6 @@
 // frontend/components/Button.tsx
-
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, type TextProps } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, type TextProps } from 'react-native';
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";

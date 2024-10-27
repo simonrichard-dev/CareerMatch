@@ -1,5 +1,4 @@
 // frontend/components/Password.tsx
-
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, type TextProps } from 'react-native';
 import { useThemeColors } from "@/hooks/useThemeColors";
@@ -9,7 +8,7 @@ import { Styles } from "@/constants/Styles";
 type Props = TextProps & {
   variant?: keyof typeof Styles,
   color?: keyof typeof Colors["light"]
-}
+};
 
 const Password = ({ variant = "field1", color = "field1_bg", ...rest }: Props) => {
   const [password, setPassword] = useState<string>('');
@@ -18,9 +17,7 @@ const Password = ({ variant = "field1", color = "field1_bg", ...rest }: Props) =
   return (
     <View style={[styles.container, { backgroundColor: themeColors[color] }]}>
       <TextInput
-        style={[styles.input, 
-          Styles[variant], 
-          { color: themeColors.field1 }]}
+        style={[styles.input, Styles[variant], { color: themeColors.field1 }]}
         placeholder="Mot de passe"
         placeholderTextColor={themeColors.field1}
         value={password}
