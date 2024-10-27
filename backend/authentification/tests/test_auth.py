@@ -6,13 +6,6 @@ from api.user.tests.factories import UserProfileFactory
 
 
 class TestAuthentificationUser(TestCase):
-    def setUp(self):
-        super().setUp()
-        self.user_with_profile = UserFactory()
-        UserProfileFactory(user=self.user_with_profile)
-
-        self.user_no_profile = UserFactory()
-
     def test_register(self):
         # no data -> 400
         resp = self.client.post('/auth/register/')
@@ -46,16 +39,16 @@ class TestAuthentificationUser(TestCase):
             'first_name': 'Bob',
             'last_name': 'Bibi',
         }
-        self.assertIsNone(self.user_no_profile.profile)
-        self.assertIsNotNone(self.user_with_profile.profile)
+        self.assertIsNone(self.user_noprofile.profile)
+        self.assertIsNotNone(self.user_withprofile.profile)
 
         # have already a profile -> 403
-        self.client.login(self.user_with_profile)
+        self.client.login(self.user_withprofile)
         resp = self.client.post('/auth/profile/', profile_data)
         self.assertEqual(resp.status_code, 403)
 
         # work -> 201
-        self.client.login(self.user_no_profile)
+        self.client.login(self.user_noprofile)
         resp = self.client.post('/auth/profile/', profile_data)
         self.assertEqual(resp.status_code, 201)
 
@@ -80,12 +73,12 @@ class TestAuthentificationUser(TestCase):
         }
 
         # Not have a profile -> 403
-        self.client.login(self.user_no_profile)
+        self.client.login(self.user_noprofile)
         resp = self.client.put('/auth/profile/', profile_data)
         self.assertEqual(resp.status_code, 403)
 
         # work -> 201
-        self.client.login(self.user_with_profile)
+        self.client.login(self.user_withprofile)
         resp = self.client.put('/auth/profile/', profile_data)
         self.assertEqual(resp.status_code, 201)
 

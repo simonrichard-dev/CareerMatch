@@ -10,10 +10,15 @@ class TestUserViewSet(TestCase):
 
         resp = self.client.get(f'/api/users/')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data['count'], 2)  # +1 from setUp
+        self.assertEqual(resp.data['count'], 4)  # +3 from setUp - 1 no active
         self.assertEqual(
             set(item['id'] for item in resp.data['results']),
-            {self.superuser.id, user.id},
+            {
+                self.superuser.id,
+                self.user_withprofile.id,
+                self.user_noprofile.id,
+                user.id
+            },
         )
 
     def test_retrieve(self):

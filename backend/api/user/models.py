@@ -1,7 +1,7 @@
-from uuid import uuid4
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 
 
 class UserProfile(models.Model):
@@ -10,7 +10,10 @@ class UserProfile(models.Model):
         verbose_name_plural = 'User Profiles'
         ordering = ('-user__created_at',)
 
-    user = models.OneToOneField("api.User", on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        "api.User",
+        on_delete=models.CASCADE
+    )
 
     first_name = models.CharField(
         verbose_name='First Name',

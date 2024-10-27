@@ -6,6 +6,8 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.user.tests.factories import SuperUserFactory
+from api.user.tests.factories import UserFactory
+from api.user.tests.factories import UserProfileFactory
 
 
 class Client(APIClient):
@@ -78,3 +80,9 @@ class TestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.superuser = SuperUserFactory()
+        UserProfileFactory(user=self.superuser)
+
+        self.user_noprofile = SuperUserFactory()
+
+        self.user_withprofile = UserFactory()
+        UserProfileFactory(user=self.user_withprofile)
