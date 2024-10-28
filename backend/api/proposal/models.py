@@ -1,6 +1,7 @@
 from django.db import models
 
 from backend.models import BaseModel
+from backend.choices import TagCategory
 
 from api.user.models import User
 
@@ -15,6 +16,12 @@ class Tag(BaseModel):
         max_length=28,
         verbose_name='Name',
         help_text='Name of this tag.',
+    )
+    category = models.IntegerField(
+        choices=TagCategory.choices,
+        default=TagCategory.TYPE,
+        verbose_name='Category',
+        help_text='Category of this tag.',
     )
 
     def __str__(self):

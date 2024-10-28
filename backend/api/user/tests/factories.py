@@ -3,6 +3,8 @@ import factory
 from api.user.models import User
 from api.user.models import UserProfile
 
+from backend.choices import UserGoalType
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -22,3 +24,6 @@ class UserProfileFactory(factory.django.DjangoModelFactory):
 
     first_name = factory.Faker('name')
     last_name = factory.Faker('name')
+    address = factory.Faker('address')
+    zip_code = factory.Faker('zipcode')
+    user_goal_type = UserGoalType.COLLABORATOR

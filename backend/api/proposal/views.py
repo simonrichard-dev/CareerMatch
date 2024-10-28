@@ -20,8 +20,9 @@ class TagViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Tag.objects.all().order_by('-name')
+    queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
 
 
 class ProposalViewSet(viewsets.ModelViewSet):

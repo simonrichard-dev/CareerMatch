@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
+from backend.choices import UserGoalType
+from backend.choices import UserMatchState
+
 
 class UserProfile(models.Model):
     class Meta:
@@ -23,6 +26,27 @@ class UserProfile(models.Model):
     last_name = models.CharField(
         verbose_name='Last Name',
         max_length=100,
+        null=False,
+    )
+    last_name = models.CharField(
+        verbose_name='Last Name',
+        max_length=100,
+        null=False,
+    )
+    address = models.CharField(
+        verbose_name='Address',
+        max_length=100,
+        null=False,
+    )
+    zip_code = models.IntegerField(
+        verbose_name='Zip Code',
+        null=False,
+    )
+
+    user_goal_type = models.IntegerField(
+        choices=UserGoalType.choices,
+        verbose_name='User Goal Type',
+        default=UserGoalType.COLLABORATOR,
         null=False,
     )
 
@@ -96,3 +120,43 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return f'[User {self.id} {self.email}]'
+
+
+class UserMatch(models.Model):
+    class Meta:
+        verbose_name = 'User Match'
+        verbose_name_plural = 'User Matches'
+        ordering = ('-user__updated_at',)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    proposal = models.ForeignKey(
+        "api.Proposal",
+        on_delete=models.CASCADE
+    )
+
+    state = models.IntegerField(
+        choices=UserMatchState.choices,
+        verbose_name='State',
+        null=False,
+    )
+
+    @staticmethod
+    def get_user_match(user_id: int, proposal_id: int) -> "UserMatch | None":
+        try:
+            return UserMatch.objects.get(user_id=user_id, proposal_id=proposal_id)
+        except UserMatch.DoesNotExist:
+            return None
+    
+    @staticmethod
+    def get_user_matches(user_id: int):
+        return UserMatch.objects.filter(
+            user_id=user_id,
+            proposal__is_published=True,
+            proposal__deleted_at=None,
+        )
+
+    def __str__(self):
+        return f'[UserMatch {self.user.id} -> {self.proposal.id} ({self.state.label})]'

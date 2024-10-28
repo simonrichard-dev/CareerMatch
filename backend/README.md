@@ -30,6 +30,11 @@ Créer un fichier `.env` dans le dossier `back-end` et y ajouter les variables d
 SECRET_KEY=ma_cle_secrète
 ```
 
+5. **Installer les données de bases :**
+```bash
+$ python manage.py loaddata tags.json
+```
+
 
 ### Étapes de migrations
 

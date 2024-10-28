@@ -1,8 +1,7 @@
 from backend.test import TestCase
+from backend.choices import UserGoalType
 
 from api.user.models import User
-from api.user.tests.factories import UserFactory
-from api.user.tests.factories import UserProfileFactory
 
 
 class TestAuthentificationUser(TestCase):
@@ -38,6 +37,9 @@ class TestAuthentificationUser(TestCase):
         profile_data = {
             'first_name': 'Bob',
             'last_name': 'Bibi',
+            'address': '123 rue de la rue',
+            'zip_code': 75000,
+            'user_goal_type': UserGoalType.COLLABORATOR,
         }
         self.assertIsNone(self.user_noprofile.profile)
         self.assertIsNotNone(self.user_withprofile.profile)
@@ -59,6 +61,9 @@ class TestAuthentificationUser(TestCase):
         for key in [
             'first_name',
             'last_name',
+            'address',
+            'zip_code',
+            'user_goal_type',
         ]:
             with self.subTest(key=key):
                 self.assertEqual(getattr(profile, key), profile_data[key])
@@ -69,7 +74,8 @@ class TestAuthentificationUser(TestCase):
         self.assertEqual(resp.status_code, 401)
 
         profile_data = {
-            'first_name': 'Bob',
+            'first_name': 'Bob updated',
+            'address': '123 rue de la rue updated',
         }
 
         # Not have a profile -> 403
@@ -88,6 +94,7 @@ class TestAuthentificationUser(TestCase):
         self.assertIsNotNone(profile)
         for key in [
             'first_name',
+            'address',
         ]:
             with self.subTest(key=key):
                 self.assertEqual(getattr(profile, key), profile_data[key])
