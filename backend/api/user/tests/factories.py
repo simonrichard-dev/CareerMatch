@@ -2,6 +2,7 @@ import factory
 
 from api.user.models import User
 from api.user.models import UserProfile
+from api.user.models import UserMatch
 
 from backend.choices import UserGoalType
 
@@ -27,3 +28,8 @@ class UserProfileFactory(factory.django.DjangoModelFactory):
     address = factory.Faker('address')
     zip_code = factory.Faker('zipcode')
     user_goal_type = UserGoalType.COLLABORATOR
+
+
+class UserMatchFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserMatch
