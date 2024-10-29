@@ -12,7 +12,7 @@ const styles: ViewStyle = {
   justifyContent: "space-between",
   gap: 10,
   padding: 10,
-  width: "auto",
+  width: "85%",
 };
 
 export default Card;

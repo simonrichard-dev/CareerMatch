@@ -4,6 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, type TextProps } from 'react-native
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 type Props = TextProps & {
   title: string;
@@ -27,7 +29,8 @@ const Button = ({ title, onPress, variant = "button", color = "button_bg", ...re
 
 const styles = StyleSheet.create({
   button: {
-    width: 340,
+    width: wp('65%'),
+    maxWidth: 340,
     height: 52,
     justifyContent: 'center',
     alignItems: 'center',

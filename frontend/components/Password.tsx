@@ -34,12 +34,12 @@ const Password = ({ variant = "field1", color = "field1_bg", ...rest }: Props) =
 
 const styles = StyleSheet.create({
   container: {
-    width: wp('85%'),
+    width: wp('65%'),
     height: 52,
     borderRadius: 12,
   },
   input: {
-    width: wp('85%'),
+    width: wp('65%'),
     height: 52,
     paddingHorizontal: 10,
     borderRadius: 12,

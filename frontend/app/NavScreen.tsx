@@ -14,8 +14,7 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type NavigationProp = StackNavigationProp<{
-  RegisterScreen: undefined;
-  HomeScreen: undefined;
+  RegisterScreen: undefined; // ou les paramètres que tu utilises
 }>;
 
 export default function LoginScreen() {
@@ -37,19 +36,14 @@ export default function LoginScreen() {
           style={styles.button}
           onPress={() => navigation.navigate('RegisterScreen')}
         >
-          <ThemedText variant="button" color="button">S'inscrire</ThemedText>
+          <ThemedText variant="button" color="button">Ne sais pas encore</ThemedText>
         </TouchableOpacity>
       </Row>
 
     {/* Body */}
-      <Card style={[styles.card1]}>
-        <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
-          <ThemedText variant="title2" color="title2">Connexion</ThemedText>
-        </Row>
-        <Card style={[styles.card2]}>
-          <Email variant="field1" color="field1" />
-          <Password variant="field1" color="field1" /> 
-        </Card>
+      <Card style={[styles.card1]}> {/*Ci dessous, les <Card> peuvent être remplacés par d'autre balises plus appropriée */}
+        <Card>Mettre un CV au format PDF</Card>
+        <Card>Insérer une vidéo au format MP4</Card>
       </Card>
 
     {/* Footer */}
@@ -57,7 +51,7 @@ export default function LoginScreen() {
       <Card>
         <Button
             title="SE CONNECTER"
-            onPress={() => navigation.navigate("HomeScreen")}
+            onPress={() => console.log("Connected !")}
             variant="button"
             color="button_bg"
         />

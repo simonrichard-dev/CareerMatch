@@ -10,7 +10,6 @@ const Row = ({ style, gap, ...rest }: Props) => (
 );
 
 const rowStyle: ViewStyle = {
-  flexDirection: "row",
   alignItems: "center",
 };
 

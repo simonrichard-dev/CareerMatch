@@ -1,33 +1,54 @@
+// frontend/app/screens/PersonalInfoScreen.tsx
+
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, View, TextInput } from "react-native";
+import { SafeAreaView, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
+import Card from '@/components/Card';
+import ThemedText from '@/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import Button from "@/components/Button";
-import Card from "@/components/Card";
+import { Colors } from '@/constants/Colors';
+import Button from '@/components/Button';
 import Row from "@/components/Row";
-import ThemedText from "@/components/ThemedText";
-import { Styles } from '@/constants/Styles';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type NavigationProp = StackNavigationProp<{
+  LoginScreen: undefined;
   RegisterScreen: undefined;
 }>;
 
-export default function PersonalInfoScreen() {
+export default function LoginScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-
+  const [postalCode, setPostalCode] = useState(''); 
+  
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
-      <Row style={styles.header}>
-        <ThemedText variant="title2" color="title2">Informations Personnelles</ThemedText>
+
+      {/* Header */}
+
+      <Row style={[styles.header, { backgroundColor: colors.testrouge}]}>
+        <Image 
+          source={require("@/assets/images/logo.png")} 
+          resizeMode='contain'
+          style={styles.logo}
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('LoginScreen')}
+        >
+          <ThemedText variant="button" color="button">Retour</ThemedText>
+        </TouchableOpacity>
       </Row>
-      <Card style={styles.card}>
+
+    {/* Body */}
+      <Card style={[styles.card]}>
+        <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
+          <ThemedText variant="title2" color="title2">Informations</ThemedText>
+        </Row>
         <TextInput
           style={styles.input}
           placeholder="Prénom"
@@ -56,47 +77,65 @@ export default function PersonalInfoScreen() {
           value={postalCode}
           onChangeText={setPostalCode}
           keyboardType="numeric"
-        />
+        />       
       </Card>
-      <View style={styles.footer}>
-        <Button
-          title="Continuer"
-          onPress={() => navigation.navigate('RegisterScreen')}
+
+    {/* Footer */}
+      
+      <Card>
+      <Button
+          title="CONTINUER"
+          onPress={() => navigation.navigate("RegisterScreen")}
           variant="button"
           color="button_bg"
         />
-      </View>
+      </Card>      
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: Styles.title1.backgroundColor,
+    flex: 1,
+    width: wp('100%'),
   },
   header: {
-    ...Styles.title1,
+    padding: hp('2%'),
+    backgroundColor: "#D3D4D5",
+    width: wp('85%'),
+    justifyContent: 'space-between', 
+    flexDirection: 'row',
+  },
+  body: {},
+  footer: {},
+  button: {
     padding: 10,
+    
+  },
+  title: {
+    padding: hp('1.5%'),
+    backgroundColor: "#FF0000",
+    width: wp('85%'),
   },
   card: {
-    width: '85%',
-    padding: 20,
-    borderRadius: 8,
-    backgroundColor: Styles.field1.backgroundColor,
+    backgroundColor: "#00FF00",
+    width: wp('85%'),
+    padding: hp('2%'),
+    flex: 1,
+  },
+  logo: {
+    width: wp('30%'),
+    height: hp('15%'),
   },
   input: {
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 8,
+    fontSize: 20,
+    lineHeight: 26,
+    width: wp('60%'),
+    height: 52,
     paddingHorizontal: 10,
-    marginBottom: 15,
-    color: Styles.field1.color,
-  },
-  footer: {
-    marginTop: 20,
-    width: '85%',
+    borderRadius: 12,
+    backgroundColor: Colors.light.field1_bg
   },
 });
+  

@@ -9,6 +9,9 @@ export const Colors = {
     button_bg: '#E5B65E',
     field1: '#FFFFFF',
     field1_bg: '#E5B65E',
+    testvert: '#00FF00',
+    testrouge: '#FF0000',
+    testbleu: '#0000FF',
   },
   dark: {
     tint: '#FFFFFF',
@@ -18,5 +21,8 @@ export const Colors = {
     button_bg: '#E5B65E',
     field1: '#FFFFFF',
     field1_bg: '#E5B65E',
+    testvert: '#00FF00',
+    testrouge: '#FF0000',
+    testbleu: '#0000FF',
   },
 };
