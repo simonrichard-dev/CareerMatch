@@ -9,11 +9,12 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 type Props = TextProps & {
   variant?: keyof typeof Styles,
-  color?: keyof typeof Colors["light"]
+  color?: keyof typeof Colors["light"],
+  password: string,
+  setPassword: any
 };
 
-const Password = ({ variant = "field1", color = "field1_bg", ...rest }: Props) => {
-  const [password, setPassword] = useState<string>('');
+const Password = ({ variant = "field1", color = "field1_bg", password, setPassword, ...rest }: Props) => {
   const themeColors = useThemeColors();
 
   return (

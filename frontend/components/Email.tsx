@@ -9,11 +9,12 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 type Props = TextProps & {
   variant?: keyof typeof Styles,
-  color?: keyof typeof Colors["light"]
+  color?: keyof typeof Colors["light"],
+  email: string,
+  setEmail: any
 };
 
-const Email = ({ variant = "field1", color = "field1_bg", ...rest }: Props) => {
-  const [email, setEmail] = useState<string>('');
+const Email = ({ variant = "field1", color = "field1_bg", email, setEmail, ...rest }: Props) => {
   const themeColors = useThemeColors();
 
   return (

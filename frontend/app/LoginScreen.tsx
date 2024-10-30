@@ -1,6 +1,6 @@
 // frontend/app/screens/LoginScreen.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -14,13 +14,15 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type NavigationProp = StackNavigationProp<{
-  RegisterScreen: undefined;
-  HomeScreen: undefined;
+  RegisterScreen: any;
+  HomeScreen: any;
 }>;
 
 export default function LoginScreen() {
   const colors = useThemeColors();
-  const navigation = useNavigation<NavigationProp>(); // Initialiser la navigation
+  const navigation = useNavigation<NavigationProp>();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
@@ -47,8 +49,8 @@ export default function LoginScreen() {
           <ThemedText variant="title2" color="title2">Connexion</ThemedText>
         </Row>
         <Card style={[styles.card2]}>
-          <Email variant="field1" color="field1" />
-          <Password variant="field1" color="field1" /> 
+          <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
+          <Password variant="field1" color="field1" password={password} setPassword={setPassword}/> 
         </Card>
       </Card>
 
