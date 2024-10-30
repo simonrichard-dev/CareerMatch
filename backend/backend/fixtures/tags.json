@@ -1,0 +1,420 @@
+[
+{
+    "model": "api.tag",
+    "pk": 1,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Backend",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 2,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Frontend",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 3,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Fullstack",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 4,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Web/Mobile",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 5,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Cybersécurité",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 6,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "DevOps",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 7,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "SRE",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 8,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "AR/VR",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 9,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Machine Learning",
+      "category": 1
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 10,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Javascript",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 11,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Python",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 12,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "PHP",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 13,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "HTML",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 14,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "CSS",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 15,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "C",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 16,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "C#",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 17,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "C++",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 18,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Java",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 19,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Ruby",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 20,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Typescript",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 21,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Node.js",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 22,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Flask",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 23,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Django",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 24,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Vue.js",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 25,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "React",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 26,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "React Native",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 27,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Git",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 28,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Github",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 29,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Gitlab",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 30,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "CI/CD",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 31,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "BDD",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 32,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "SQL",
+      "category": 2
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 33,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "CDI",
+      "category": 3
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 34,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "CDD",
+      "category": 3
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 35,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Stage",
+      "category": 3
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 36,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Alternance",
+      "category": 3
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 37,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Freelance",
+      "category": 3
+    }
+  },
+  {
+    "model": "api.tag",
+    "pk": 38,
+    "fields": {
+      "created_at": "2024-10-28T10:08:38.789Z",
+      "updated_at": "2024-10-28T10:08:38.789Z",
+      "deleted_at": null,
+      "name": "Projet",
+      "category": 3
+    }
+  }
+]
