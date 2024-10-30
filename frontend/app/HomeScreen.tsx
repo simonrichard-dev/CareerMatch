@@ -11,6 +11,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Video } from 'expo-av';
 import * as Linking from 'expo-linking';
 
+
 type NavigationProp = StackNavigationProp<{ LoginScreen: undefined; }>;
 
 export default function HomeScreen() {
@@ -39,7 +40,7 @@ export default function HomeScreen() {
       {/* Body */}
       <ScrollView contentContainerStyle={styles.bodyContainer}>
         <Card style={[styles.body, isLargeScreen ? styles.horizontalLayout : styles.verticalLayout]}>
-          <TouchableOpacity onPress={() => Linking.openURL('path/to/your/cv.pdf')} style={styles.card}>
+          <TouchableOpacity onPress={() => Linking.openURL('/assets/images/CV_0.pdf')} style={styles.card}>
             <ThemedText>Voir CV en PDF</ThemedText>
           </TouchableOpacity>
           <Video
