@@ -12,6 +12,7 @@ import Row from "@/components/Row";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { axiosPost } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
   RegisterScreen: any;
@@ -21,8 +22,20 @@ type NavigationProp = StackNavigationProp<{
 export default function LoginScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
+
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  function handleLogin() {
+    axiosPost('/auth/login/', {
+      email: email,
+      password: password,
+    }).then((response) => {
+      if (response) {
+        navigation.navigate('HomeScreen');
+      }
+    });
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
@@ -59,7 +72,7 @@ export default function LoginScreen() {
       <Card>
         <Button
             title="SE CONNECTER"
-            onPress={() => navigation.navigate("HomeScreen")}
+            onPress={() => handleLogin()}
             variant="button"
             color="button_bg"
         />

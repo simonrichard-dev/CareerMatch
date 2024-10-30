@@ -1,6 +1,6 @@
 // frontend/app/screens/LoginScreen.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -12,6 +12,7 @@ import Row from "@/components/Row";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { axiosPost } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
   PersonalInfoScreen: undefined; // ou les paramètres que tu utilises
@@ -21,8 +22,21 @@ type NavigationProp = StackNavigationProp<{
 
 export default function RegisterScreen() {
   const colors = useThemeColors();
-  const navigation = useNavigation<NavigationProp>(); // Initialiser la navigation
+  const navigation = useNavigation<NavigationProp>();
   
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  function handleRegister() {
+    axiosPost('/auth/register/', {
+      email: email,
+      password: password,
+    }).then((response) => {
+      if (response) {
+        navigation.navigate('PersonalInfoScreen');
+      }
+    });
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
@@ -48,8 +62,8 @@ export default function RegisterScreen() {
         <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
           <ThemedText variant="title2" color="title2">Créer un compte</ThemedText>
         </Row>
-        <Email variant="field1" color="field1" />
-        <Password variant="field1" color="field1" />        
+        <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
+        <Password variant="field1" color="field1" password={password} setPassword={setPassword} />        
       </Card>
 
     {/* Footer */}
@@ -57,7 +71,7 @@ export default function RegisterScreen() {
       <Card>
       <Button
           title="CONTINUER"
-          onPress={() => navigation.navigate("PersonalInfoScreen")} // Navigation vers l'écran suivant
+          onPress={() => handleRegister()}
           variant="button"
           color="button_bg"
         />

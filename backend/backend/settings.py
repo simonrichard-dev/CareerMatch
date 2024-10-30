@@ -25,7 +25,15 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 DEBUG_DB = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+]
+CORS_ALLOWED_HOSTS = [
+    'localhost'
+]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8081',
+]
 
 
 INSTALLED_APPS = [
@@ -39,6 +47,7 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'rest_framework_simplejwt',
+    "corsheaders",
     # local
     'api',
     'authentification',
@@ -47,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
