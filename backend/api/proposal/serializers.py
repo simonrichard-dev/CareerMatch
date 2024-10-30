@@ -39,6 +39,8 @@ class ProposalSerializer(ProposalSerializerBase):
             'description',
             'author',
             'tags',
+            'proposal_file',
+            'video_file',
         )
 
 
@@ -49,8 +51,18 @@ class ProposalUpsertSerializer(ProposalSerializerBase):
         required=False
     )
 
+    proposal_file = serializers.FileField(
+        required=True,
+        help_text='Upload a proposal file.'
+    )
+    video_file = serializers.FileField(
+        required=False,
+        allow_null=True,
+        help_text='Upload a video file.'
+    )
+
     class Meta(ProposalSerializerBase.Meta):
-        fields = ('title', 'description', 'tags',)
+        fields = ('title', 'description', 'tags', 'proposal_file', 'video_file',)
 
     def validate(self, data):
         return data

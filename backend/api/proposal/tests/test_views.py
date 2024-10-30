@@ -1,3 +1,5 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from backend.test import TestCase
 
 from api.proposal.models import Proposal
@@ -5,6 +7,8 @@ from api.proposal.models import Proposal
 
 class TestProposalViewSet(TestCase):
     def test_create(self):
+        proposal_file = SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf")
+
         # no login -> 401
         resp = self.client.post('/api/proposals/')
         self.assertEqual(resp.status_code, 401)
@@ -18,9 +22,34 @@ class TestProposalViewSet(TestCase):
         proposal_data = {
             "title": "Title proposal",
             "description": "Description proposal",
+            "proposal_file": proposal_file
         }
         self.client.login(self.user_withprofile)
-        resp = self.client.post('/api/proposals/', proposal_data)
+        resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
+        self.assertEqual(resp.status_code, 201)
+
+        proposal = Proposal.get_proposal(resp.data['data']['id'])
+
+        for key in [
+            'title',
+            'description',
+        ]:
+            with self.subTest(key=key):
+                self.assertEqual(getattr(proposal, key), resp.data['data'][key])
+
+    def test_create_with_files(self):
+        proposal_file = SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf")
+        video_file = SimpleUploadedFile("test.mp4", b"Video content", content_type="video/mp4")
+
+        # work -> 201
+        proposal_data = {
+            "title": "Title proposal with files",
+            "description": "Description proposal with files",
+            "proposal_file": proposal_file,
+            "video_file": video_file,
+        }
+        self.client.login(self.user_withprofile)
+        resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
         self.assertEqual(resp.status_code, 201)
 
         proposal = Proposal.get_proposal(resp.data['data']['id'])

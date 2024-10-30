@@ -64,6 +64,22 @@ class Proposal(BaseModel):
         help_text='Tags related of this proposal.',
     )
 
+    proposal_file = models.FileField(
+        upload_to='proposals/',
+        null=True,
+        blank=True,
+        verbose_name='Proposal File',
+        help_text='Upload a proposal document related to this proposal.',
+    )
+
+    video_file = models.FileField(
+        upload_to='videos/',
+        null=True,
+        blank=True,
+        verbose_name='Video File',
+        help_text='Upload a video file related to this proposal.',
+    )
+
     @staticmethod
     def get_proposal(proposal_id: int) -> "Proposal | None":
         try:
