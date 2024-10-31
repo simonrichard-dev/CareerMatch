@@ -37,7 +37,7 @@ class TestProposalViewSet(TestCase):
             with self.subTest(key=key):
                 self.assertEqual(getattr(proposal, key), resp.data['data'][key])
 
-    def test_create_with_files(self):
+    def test_create_with_video(self):
         proposal_file = SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf")
         video_file = SimpleUploadedFile("test.mp4", b"Video content", content_type="video/mp4")
 

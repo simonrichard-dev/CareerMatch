@@ -15,4 +15,8 @@ class TagCategory(models.IntegerChoices):
 class UserMatchState(models.IntegerChoices):
     MATCHED = 1, 'Matched'
     DISMATCHED = 2, 'Dismatched'
-    MAYBE = 3, 'Maybe'
+
+
+class UserNotificationState(models.IntegerChoices):
+    READ = 1, 'Read'
+    UNREAD = 2, 'Unread'

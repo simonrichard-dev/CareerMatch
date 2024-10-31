@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import User
 from .models import UserProfile
 from .models import UserMatch
+from .models import UserNotification
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -41,3 +42,16 @@ class UserMatchSerializer(UserMatchSerializerBase):
 
     class Meta(UserMatchSerializerBase.Meta):
         fields = ['id', 'user', 'proposal', 'state']
+
+
+class UserNotificationSerializer(serializers.ModelSerializer):
+    user = UserSerializerBase(read_only=True)
+    proposal = serializers.SerializerMethodField()
+
+    def get_proposal(self, obj: UserMatch):
+        from api.proposal.serializers import ProposalSerializerBase
+        return ProposalSerializerBase(obj.proposal).data
+
+    class Meta:
+        model = UserNotification
+        fields = ['id', 'created_at', 'user', 'proposal', 'state']

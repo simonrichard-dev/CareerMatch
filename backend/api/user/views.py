@@ -3,12 +3,15 @@ from rest_framework.response import Response
 
 from backend.permissions import HaveProfile
 from backend.choices import UserMatchState
+from backend.choices import UserNotificationState
 
 from .models import User
 from .models import UserMatch
+from .models import UserNotification
 from .serializers import UserSerializer
 from .serializers import UserSerializerBase
 from .serializers import UserMatchSerializer
+from .serializers import UserNotificationSerializer
 
 class UserViewSet(
     mixins.ListModelMixin,
@@ -56,9 +59,38 @@ class MeUserMatchesViewSet(
         )
         list_matches = UserMatch.objects.filter(
             user=self.request.user,
-            state__in=[UserMatchState.MATCHED, UserMatchState.MAYBE]
+            state=UserMatchState.MATCHED
         )
         return Response({
             'matches': UserMatchSerializer(list_matches, many=True).data,
             'matches_received': UserMatchSerializer(list_matched_received, many=True).data
         }, status=status.HTTP_200_OK)
+
+
+class MeUserNotificationsViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet
+):
+    permission_classes = [
+        permissions.IsAuthenticated,
+        HaveProfile
+    ]
+
+    def get_queryset(self):
+        return UserNotification.objects.filter(
+            user=self.request.user
+        )
+
+    def list(self, request):
+        list_notifications = self.get_queryset()
+        return Response(
+            UserNotificationSerializer(list_notifications, many=True).data,
+            status=status.HTTP_200_OK
+        )
+
+    def create(self, request):
+        for notification in self.get_queryset().filter(state=UserNotificationState.UNREAD):
+            notification.state = UserNotificationState.READ
+            notification.save()
+        return Response(status=status.HTTP_201_CREATED)

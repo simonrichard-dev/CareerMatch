@@ -2,9 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from backend.choices import UserGoalType
 from backend.choices import UserMatchState
+from backend.choices import UserNotificationState
 
 
 class UserProfile(models.Model):
@@ -160,3 +163,41 @@ class UserMatch(models.Model):
 
     def __str__(self):
         return f'[UserMatch {self.user.id} -> {self.proposal.id} ({self.state.label})]'
+
+
+class UserNotification(models.Model):
+    class Meta:
+        verbose_name = 'User Notification'
+        verbose_name_plural = 'User Notifications'
+        ordering = ('-created_at',)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        blank=True,
+        null=True
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    proposal = models.ForeignKey(
+        "api.Proposal",
+        on_delete=models.CASCADE
+    )
+    state = models.IntegerField(
+        choices=UserNotificationState.choices,
+        verbose_name='State',
+        default=UserNotificationState.UNREAD,
+        null=False,
+    )
+
+
+@receiver(post_save, sender=UserMatch) 
+def create_notification_match(sender, instance: UserMatch, created, **kwargs):
+    if created:
+        if instance.state == UserMatchState.MATCHED:
+            UserNotification.objects.create(
+                user=instance.user,
+                proposal=instance.proposal,
+            )
