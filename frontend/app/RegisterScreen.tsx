@@ -14,7 +14,7 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type NavigationProp = StackNavigationProp<{
-  PersonalInfoScreen: undefined; // ou les paramètres que tu utilises
+  ProfilScreen: undefined; // ou les paramètres que tu utilises
   LoginScreen: undefined; // ou les paramètres que tu utilises
 
 }>;
@@ -48,8 +48,8 @@ export default function RegisterScreen() {
         <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
           <ThemedText variant="title2" color="title2">Créer un compte</ThemedText>
         </Row>
-        <Email variant="field1" color="field1" />
-        <Password variant="field1" color="field1" />        
+        <Email email={''} setEmail={undefined} />
+        <Password password={''} setPassword={undefined}/>        
       </Card>
 
     {/* Footer */}
@@ -57,7 +57,7 @@ export default function RegisterScreen() {
       <Card>
       <Button
           title="CONTINUER"
-          onPress={() => navigation.navigate("PersonalInfoScreen")} // Navigation vers l'écran suivant
+          onPress={() => navigation.navigate("ProfilScreen")} // Navigation vers l'écran suivant
           variant="button"
           color="button_bg"
         />

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions } from "react-native";
+import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform  } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -10,7 +10,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-type NavigationProp = StackNavigationProp<{ LoginScreen: undefined; }>;
+type NavigationProp = StackNavigationProp<{ ProfilScreen: undefined; }>;
 
 export default function HomeScreen() {
   const colors = useThemeColors();
@@ -40,30 +40,28 @@ export default function HomeScreen() {
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('LoginScreen')}
+          onPress={() => navigation.navigate('ProfilScreen')}
         >
-          <ThemedText variant="button" color="button">Ne sais pas encore</ThemedText>
+          <ThemedText variant="button" color="button">Profil</ThemedText>
         </TouchableOpacity>
       </Row>
 
       {/* Body avec ScrollView pour permettre le défilement */}
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity onPress={openModal}>
-          <Image
-            source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
-            style={styles.largeImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </ScrollView>
+      <TouchableOpacity onPress={openModal}>
+        <Image
+          source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
+          style={styles.largeImage}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
 
-      {/* Modal pour afficher le carrousel avec l'image et la vidéo */}
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={closeModal}
-      >
+      {Platform.OS === 'android' || Platform.OS === 'ios' ? (
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closeModal}
+        >
         <View style={styles.modalContainer}>
           <ScrollView
             horizontal
@@ -71,6 +69,9 @@ export default function HomeScreen() {
             style={styles.carouselContainer}
             showsHorizontalScrollIndicator={false}
           >
+
+            {/* Modal pour afficher le carrousel avec l'image et la vidéo */}
+
             {/* Image en plein écran */}
             <View style={styles.carouselItem}>
               <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
@@ -101,6 +102,12 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
       </Modal>
+      ) : (
+        <View>
+          <ThemedText>Web platform</ThemedText>
+        </View>
+      )}
+      
 
       {/* Footer */}
       <Card style={styles.footer}>
