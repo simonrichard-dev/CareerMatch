@@ -138,4 +138,3 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.field1_bg
   },
 });
-  
