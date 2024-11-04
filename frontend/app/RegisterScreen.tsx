@@ -15,7 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosPost } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
-  PersonalInfoScreen: undefined; // ou les paramètres que tu utilises
+  ProfilScreen: undefined; // ou les paramètres que tu utilises
   LoginScreen: undefined; // ou les paramètres que tu utilises
 
 }>;
@@ -33,7 +33,7 @@ export default function RegisterScreen() {
       password: password,
     }).then((response) => {
       if (response) {
-        navigation.navigate('PersonalInfoScreen');
+        navigation.navigate('ProfilScreen');
       }
     });
   }
