@@ -25,16 +25,20 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 DEBUG_DB = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-]
-CORS_ALLOWED_HOSTS = [
-    'localhost'
-]
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8081',
-]
-
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    CORS_ALLOWED_HOSTS = ['*']
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    ALLOWED_HOSTS = [
+        'localhost',
+    ]
+    CORS_ALLOWED_HOSTS = [
+        'localhost'
+    ]
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:8081',
+    ]
 
 INSTALLED_APPS = [
     # core
