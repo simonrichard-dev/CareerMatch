@@ -1,8 +1,9 @@
 import axios, { AxiosError } from 'axios'
+import { API_URL } from "@env"
 import Toast from 'react-native-toast-message';
 
 export let Axios = axios.create({
-    baseURL: "http://localhost:8000/",
+    baseURL: API_URL,
     timeout: 10000,
     headers: {
         'Accept': 'application/json',
@@ -15,12 +16,12 @@ export let Axios = axios.create({
 });
 
 Axios.interceptors.request.use((config) => {
-    if (config.url?.includes('?')){
+    if (config.url?.includes('?')) {
         return config
     }
     // @ts-ignore
-    if (config.url[config.url.length-1] !== '/') {
-      config.url += '/';
+    if (config.url[config.url.length - 1] !== '/') {
+        config.url += '/';
     }
     return config;
 });
