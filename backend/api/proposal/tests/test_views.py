@@ -1,65 +1,71 @@
+import os
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from backend.test import TestCase
 
 from api.proposal.models import Proposal
 
+IMAGE_PATH = os.path.join(settings.BASE_DIR, "media/proposals/cv_1.pdf")
+
 
 class TestProposalViewSet(TestCase):
     def test_create(self):
-        proposal_file = SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf")
+        with open(IMAGE_PATH, 'rb') as infile:
+            proposal_file = SimpleUploadedFile("test.pdf", infile.read(), content_type="application/pdf")
 
-        # no login -> 401
-        resp = self.client.post('/api/proposals/')
-        self.assertEqual(resp.status_code, 401)
+            # no login -> 401
+            resp = self.client.post('/api/proposals/')
+            self.assertEqual(resp.status_code, 401)
 
-        # user no profile -> 403
-        self.client.login(self.user_noprofile)
-        resp = self.client.post('/api/proposals/')
-        self.assertEqual(resp.status_code, 403)
+            # user no profile -> 403
+            self.client.login(self.user_noprofile)
+            resp = self.client.post('/api/proposals/')
+            self.assertEqual(resp.status_code, 403)
 
-        # work -> 201
-        proposal_data = {
-            "title": "Title proposal",
-            "description": "Description proposal",
-            "proposal_file": proposal_file
-        }
-        self.client.login(self.user_withprofile)
-        resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
-        self.assertEqual(resp.status_code, 201)
+            # work -> 201
+            proposal_data = {
+                "title": "Title proposal",
+                "description": "Description proposal",
+                "proposal_file": proposal_file
+            }
+            self.client.login(self.user_withprofile)
+            resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
+            self.assertEqual(resp.status_code, 201)
 
-        proposal = Proposal.get_proposal(resp.data['data']['id'])
+            proposal = Proposal.get_proposal(resp.data['data']['id'])
 
-        for key in [
-            'title',
-            'description',
-        ]:
-            with self.subTest(key=key):
-                self.assertEqual(getattr(proposal, key), resp.data['data'][key])
+            for key in [
+                'title',
+                'description',
+            ]:
+                with self.subTest(key=key):
+                    self.assertEqual(getattr(proposal, key), resp.data['data'][key])
 
     def test_create_with_video(self):
-        proposal_file = SimpleUploadedFile("test.pdf", b"PDF content", content_type="application/pdf")
-        video_file = SimpleUploadedFile("test.mp4", b"Video content", content_type="video/mp4")
+        with open(IMAGE_PATH, 'rb') as infile:
+            proposal_file = SimpleUploadedFile("test.pdf", infile.read(), content_type="application/pdf")
+            video_file = SimpleUploadedFile("test.mp4", b"Video content", content_type="video/mp4")
 
-        # work -> 201
-        proposal_data = {
-            "title": "Title proposal with files",
-            "description": "Description proposal with files",
-            "proposal_file": proposal_file,
-            "video_file": video_file,
-        }
-        self.client.login(self.user_withprofile)
-        resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
-        self.assertEqual(resp.status_code, 201)
+            # work -> 201
+            proposal_data = {
+                "title": "Title proposal with files",
+                "description": "Description proposal with files",
+                "proposal_file": proposal_file,
+                "video_file": video_file,
+            }
+            self.client.login(self.user_withprofile)
+            resp = self.client.post('/api/proposals/', proposal_data, content_type=None, format='multipart')
+            self.assertEqual(resp.status_code, 201)
 
-        proposal = Proposal.get_proposal(resp.data['data']['id'])
+            proposal = Proposal.get_proposal(resp.data['data']['id'])
 
-        for key in [
-            'title',
-            'description',
-        ]:
-            with self.subTest(key=key):
-                self.assertEqual(getattr(proposal, key), resp.data['data'][key])
+            for key in [
+                'title',
+                'description',
+            ]:
+                with self.subTest(key=key):
+                    self.assertEqual(getattr(proposal, key), resp.data['data'][key])
 
     def test_update(self):
         proposal = Proposal.objects.create(

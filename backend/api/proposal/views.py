@@ -101,7 +101,22 @@ class ProposalViewSet(viewsets.ModelViewSet):
             author=self.request.user,
             is_published=True,
         )
+        process_pdf_to_pictures(
+            serializer.instance.proposal_file.path,
+            serializer.instance.proposal_file.name.replace('proposals/', '')
+        )
 
     def perform_destroy(self, instance: Proposal):
         instance.deleted_at = timezone.now()
         instance.save()
+
+
+def process_pdf_to_pictures(pdf_path: str, pdf_file: str):
+    from pdf2image import convert_from_path
+    images = convert_from_path(pdf_path)
+
+    path = pdf_path.replace(pdf_file.replace('/', '\\'), '')
+    file_name = pdf_file.replace('.pdf', '')
+
+    for i in range(len(images)):
+        images[i].save(path + '/imgs/' + file_name + "_" + str(i) +'.jpg', 'JPEG')
