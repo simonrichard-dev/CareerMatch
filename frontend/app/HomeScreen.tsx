@@ -21,12 +21,12 @@ export default function HomeScreen() {
 
   const openModal = () => {
     setModalVisible(true);
-    StatusBar.setHidden(true); // Masque la barre de statut
+    StatusBar.setHidden(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
-    StatusBar.setHidden(false); // Restaure la barre de statut
+    StatusBar.setHidden(false);
   };
 
   return (

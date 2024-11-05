@@ -1,50 +1,106 @@
-// frontend/app/screens/PersonalInfoScreen.tsx
+// frontend/app/screens/ProfilScreen.tsx
 
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Image, TouchableOpacity, TextInput, View } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Colors } from '@/constants/Colors';
 import Button from '@/components/Button';
 import Row from "@/components/Row";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { axiosPost, axiosGet } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
-  LoginScreen: undefined;
-  RegisterScreen: undefined;
+  LoginScreen: any;
+  HomeScreen: any;
 }>;
 
-export default function LoginScreen() {
+export default function PersonalInfoScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
-  const [postalCode, setPostalCode] = useState(''); 
-  
+  const [postalCode, setPostalCode] = useState('');
+  const [pdf, setPdfFile] = useState(null);
+  const [video, setVideoFile] = useState(null);
+
+  // Fonction pour charger les informations de l'utilisateur
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const response = await axiosGet('/api/users/me'); //changer /user/profile par le bon chemin
+        if (response) {
+          setFirstName(response.data.firstName || '');
+          setLastName(response.data.lastName || '');
+          setAddress(response.data.address || '');
+          setPostalCode(response.data.postalCode || '');
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des données utilisateur:", error);
+      }
+    };
+    loadUserData();
+  }, []);
+
+  // Fonction pour sélectionner un PDF
+  const pickPdfFile = async () => {
+    let result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
+    if (result.type === "success") {
+      setPdfFile(result.uri);
+    }
+  };
+
+  // Fonction pour sélectionner une vidéo
+  const pickVideoFile = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      aspect: [9, 16],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setVideoFile(result.uri);
+    }
+  };
+
+  function handleRegister() {
+    axiosPost('/auth/register/', {
+      firstName,
+      lastName,
+      address,
+      postalCode,
+      pdf: pdf,
+      video: video,
+    }).then((response) => {
+      if (response) {
+        navigation.navigate('HomeScreen');
+      }
+    });
+  }
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
-
       {/* Header */}
-
-      <Row style={[styles.header, { backgroundColor: colors.testrouge}]}>
-        <Image 
-          source={require("@/assets/images/logo.png")} 
+      <Row style={[styles.header, { backgroundColor: colors.testrouge }]}>
+        <Image
+          source={require("@/assets/images/logo.png")}
           resizeMode='contain'
           style={styles.logo}
         />
         <TouchableOpacity
-          style={styles.button}
           onPress={() => navigation.navigate('LoginScreen')}
         >
           <ThemedText variant="button" color="button">Retour</ThemedText>
         </TouchableOpacity>
       </Row>
 
-    {/* Body */}
+      {/* Body */}
       <Card style={[styles.card]}>
         <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
           <ThemedText variant="title2" color="title2">Informations</ThemedText>
@@ -77,19 +133,24 @@ export default function LoginScreen() {
           value={postalCode}
           onChangeText={setPostalCode}
           keyboardType="numeric"
-        />       
+        />
+
+        {/* Boutons pour joindre un fichier PDF et une vidéo */}
+        <View style={styles.fileButtons}>
+          <Button title="Joindre un PDF" onPress={pickPdfFile} variant="button" color="button_bg" />
+          <Button title="Joindre une vidéo" onPress={pickVideoFile} variant="button" color="button_bg" />
+        </View>
       </Card>
 
-    {/* Footer */}
-      
+      {/* Footer */}
       <Card>
-      <Button
+        <Button
           title="CONTINUER"
-          onPress={() => navigation.navigate("RegisterScreen")}
+          onPress={() => handleRegister()}
           variant="button"
           color="button_bg"
         />
-      </Card>      
+      </Card>
     </SafeAreaView>
   );
 }
@@ -104,14 +165,8 @@ const styles = StyleSheet.create({
     padding: hp('2%'),
     backgroundColor: "#D3D4D5",
     width: wp('85%'),
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
     flexDirection: 'row',
-  },
-  body: {},
-  footer: {},
-  button: {
-    padding: 10,
-    
   },
   title: {
     padding: hp('1.5%'),
@@ -135,6 +190,12 @@ const styles = StyleSheet.create({
     height: 52,
     paddingHorizontal: 10,
     borderRadius: 12,
-    backgroundColor: Colors.light.field1_bg
+    backgroundColor: Colors.light.field1_bg,
+    marginBottom: hp('1%'),
+  },
+  fileButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: hp('2%'),
   },
 });

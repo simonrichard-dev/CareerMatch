@@ -15,8 +15,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosPost } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
-  ProfilScreen: undefined; // ou les paramètres que tu utilises
-  LoginScreen: undefined; // ou les paramètres que tu utilises
+  ProfilScreen: any;
+  LoginScreen: any;
 
 }>;
 

@@ -1,4 +1,4 @@
-// frontend/app/screens/LoginScreen.tsx
+// frontend/app/LoginScreen.tsx
 
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
@@ -13,6 +13,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosPost } from '@/services/axios-fetch';
+import useAuthToken from '@/hooks/useAuthToken';
+
 
 type NavigationProp = StackNavigationProp<{
   RegisterScreen: any;
@@ -20,6 +22,7 @@ type NavigationProp = StackNavigationProp<{
 }>;
 
 export default function LoginScreen() {
+  const { saveToken } = useAuthToken();
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
 
@@ -31,8 +34,12 @@ export default function LoginScreen() {
       email: email,
       password: password,
     }).then((response) => {
-      if (response) {
-        navigation.navigate('HomeScreen');
+      console.log(response?.data);
+      if (response && response.data.access) {
+
+        saveToken(response.data.access).then(() => {
+          navigation.navigate('HomeScreen');
+        });
       }
     });
   }
@@ -42,9 +49,9 @@ export default function LoginScreen() {
 
       {/* Header */}
 
-      <Row style={[styles.header, { backgroundColor: colors.testbleu}]}>
-        <Image 
-          source={require("@/assets/images/logo.png")} 
+      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+        <Image
+          source={require("@/assets/images/logo.png")}
           resizeMode='contain'
           style={styles.logo}
         />
@@ -56,27 +63,27 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </Row>
 
-    {/* Body */}
+      {/* Body */}
       <Card style={[styles.card1]}>
         <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
           <ThemedText variant="title2" color="title2">Connexion</ThemedText>
         </Row>
         <Card style={[styles.card2]}>
           <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
-          <Password variant="field1" color="field1" password={password} setPassword={setPassword}/> 
+          <Password variant="field1" color="field1" password={password} setPassword={setPassword} />
         </Card>
       </Card>
 
-    {/* Footer */}
-      
+      {/* Footer */}
+
       <Card>
         <Button
-            title="SE CONNECTER"
-            onPress={() => handleLogin()}
-            variant="button"
-            color="button_bg"
+          title="SE CONNECTER"
+          onPress={() => handleLogin()}
+          variant="button"
+          color="button_bg"
         />
-      </Card>      
+      </Card>
     </SafeAreaView>
   );
 }
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
   body: {},
   footer: {},
   button: {
-  padding: 10,
+    padding: 10,
   },
   title: {
     padding: hp('1.5%'),

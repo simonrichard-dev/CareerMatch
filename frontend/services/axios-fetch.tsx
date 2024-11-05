@@ -3,7 +3,7 @@ import { API_URL } from "@env"
 import Toast from 'react-native-toast-message';
 
 export let Axios = axios.create({
-    baseURL: API_URL,
+    baseURL: 'http://192.168.1.13:8000/', //http://10.1.3.248:8000/ holberton paris
     timeout: 10000,
     headers: {
         'Accept': 'application/json',
@@ -80,6 +80,19 @@ Axios.interceptors.response.use(function (response) {
 export async function axiosPost(url: string, data: any) {
     try {
         const resp = await Axios.post(url, data);
+        return resp;
+    } catch (error) {
+        Toast.show({
+            type: 'error',
+            text1: (error as any).message,
+        });
+        return undefined;
+    }
+}
+
+export async function axiosGet(url: string) {
+    try {
+        const resp = await Axios.get(url);
         return resp;
     } catch (error) {
         Toast.show({
