@@ -1,6 +1,6 @@
 // frontend/app/screens/LoginScreen.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -15,17 +15,18 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosPost } from '@/services/axios-fetch';
 
 type NavigationProp = StackNavigationProp<{
-  ProfilScreen: any;
   LoginScreen: any;
+  ProfilScreen: any;
 
 }>;
+
 
 export default function RegisterScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-  
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
 
   function handleRegister() {
     axiosPost('/auth/register/', {
@@ -33,7 +34,7 @@ export default function RegisterScreen() {
       password: password,
     }).then((response) => {
       if (response) {
-        navigation.navigate('ProfilScreen');
+        navigation.navigate('LoginScreen');
       }
     });
   }

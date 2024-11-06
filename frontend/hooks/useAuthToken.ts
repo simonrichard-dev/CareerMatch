@@ -6,13 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ACCESS_TOKEN_KEY = 'access_token';
 
 export default function useAuthToken() {
+  const [state, setState] = useState<'loading' | 'loaded'>('loading');
   const [token, setToken] = useState<string | null>(null);
 
   // Fonction pour stocker le token
   const saveToken = async (newToken: string) => {
     try {
-      await AsyncStorage.setItem(ACCESS_TOKEN_KEY, newToken);
       setToken(newToken);
+      await AsyncStorage.setItem(ACCESS_TOKEN_KEY, newToken);
     } catch (error) {
       console.error("Erreur lors de l'enregistrement du token :", error);
     }
@@ -42,10 +43,13 @@ export default function useAuthToken() {
 
   // Charger le token au montage du hook
   useEffect(() => {
-    loadToken();
+    loadToken().then(() => {
+      setState('loaded');
+    });
   }, []);
 
   return {
+    state,
     token,
     saveToken,
     deleteToken,

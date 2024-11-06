@@ -1,9 +1,9 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { API_URL } from "@env"
 import Toast from 'react-native-toast-message';
 
 export let Axios = axios.create({
-    baseURL: 'http://192.168.1.13:8000/', //http://10.1.3.248:8000/ holberton paris
+    baseURL: 'http://10.1.3.248:8000/', //holberton paris //'http://192.168.1.13:8000/' vanves
     timeout: 10000,
     headers: {
         'Accept': 'application/json',
@@ -77,9 +77,20 @@ Axios.interceptors.response.use(function (response) {
 });
 
 
-export async function axiosPost(url: string, data: any) {
+export async function axiosPost(url: string, data: any, token?: string | null) {
     try {
-        const resp = await Axios.post(url, data);
+        let resp: AxiosResponse<any, any>;
+        if (token) {
+            resp = await Axios.post(url, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        }
+        else {
+            resp = await Axios.post(url, data);
+        }
+        resp = await Axios.post(url, data);
         return resp;
     } catch (error) {
         Toast.show({
@@ -90,9 +101,19 @@ export async function axiosPost(url: string, data: any) {
     }
 }
 
-export async function axiosGet(url: string) {
+export async function axiosGet(url: string, token?: string | null) {
     try {
-        const resp = await Axios.get(url);
+        let resp: AxiosResponse<any, any>;
+        if (token) {
+            resp = await Axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        }
+        else {
+            resp = await Axios.get(url);
+        }
         return resp;
     } catch (error) {
         Toast.show({

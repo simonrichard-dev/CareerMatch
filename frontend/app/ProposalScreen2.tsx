@@ -10,7 +10,7 @@ import Row from "@/components/Row";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { axiosPost } from '@/services/axios-fetch';
+import { axiosGet, axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 
 type NavigationProp = StackNavigationProp<{
@@ -24,6 +24,8 @@ export default function ChoiceScreen() {
   const navigation = useNavigation<NavigationProp>();
   const [choice, setChoice] = useState<string | null>(null);
   const { token, state } = useAuthToken();
+  const [tags, setTags] = useState<any[]>([]);
+
 
 
   useEffect(() => {
@@ -33,6 +35,22 @@ export default function ChoiceScreen() {
       }
     }
   }, [state, token]);
+
+  useEffect(() => {
+    // Fetch available tags for jobs, technologies, and contracts
+    const loadTags = async () => {
+      try {
+        const response = await axiosGet('/api/proposals/tags/');
+        if (response && response.data) {
+          setTags(response.data);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des tags:", error);
+      }
+    };
+
+    loadTags();
+  }, []);
 
   function handleContinue() {
     if (choice) {
@@ -47,10 +65,10 @@ export default function ChoiceScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
+    <SafeAreaView style={[styles.container, ]}>
 
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+      <Row style={[styles.header, ]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'

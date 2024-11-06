@@ -10,14 +10,14 @@ import Button from '@/components/Button';
 import Row from "@/components/Row";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { axiosPost, axiosGet } from '@/services/axios-fetch';
+import useAuthToken from '@/hooks/useAuthToken';
 
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
   HomeScreen: any;
+  ChoiceScreen: any;
 }>;
 
 export default function PersonalInfoScreen() {
@@ -27,59 +27,45 @@ export default function PersonalInfoScreen() {
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [pdf, setPdfFile] = useState(null);
-  const [video, setVideoFile] = useState(null);
+  const { token, state } = useAuthToken();
+
+  useEffect(() => {
+    if (state == "loaded") {
+      if (token == null) {
+        navigation.navigate('LoginScreen');
+      }
+    }
+  }, [state, token]);
 
   // Fonction pour charger les informations de l'utilisateur
   useEffect(() => {
+    if (!token) return;
     const loadUserData = async () => {
       try {
-        const response = await axiosGet('/api/users/me'); //changer /user/profile par le bon chemin
-        if (response) {
-          setFirstName(response.data.firstName || '');
-          setLastName(response.data.lastName || '');
-          setAddress(response.data.address || '');
-          setPostalCode(response.data.postalCode || '');
+        const response = await axiosGet('/api/users/me', token);
+        if (response && response.data && response.data.profile) {
+          setFirstName(response.data.profile.first_name || '');
+          setLastName(response.data.profile.last_name || '');
+          // setAddress(response.data.address || '');
+          // setPostalCode(response.data.postalCode || '');
         }
       } catch (error) {
         console.error("Erreur lors du chargement des données utilisateur:", error);
       }
     };
     loadUserData();
-  }, []);
+  }, [token]);
 
-  // Fonction pour sélectionner un PDF
-  const pickPdfFile = async () => {
-    let result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
-    if (result.type === "success") {
-      setPdfFile(result.uri);
-    }
-  };
-
-  // Fonction pour sélectionner une vidéo
-  const pickVideoFile = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      aspect: [9, 16],
-      quality: 1,
-    });
-    if (!result.cancelled) {
-      setVideoFile(result.uri);
-    }
-  };
-
-  function handleRegister() {
-    axiosPost('/auth/register/', {
-      firstName,
-      lastName,
-      address,
-      postalCode,
-      pdf: pdf,
-      video: video,
-    }).then((response) => {
+  function handleRegisterProfile() {
+    axiosPost('/auth/profile/', {
+      'first_name': firstName,
+      'last_name': lastName,
+      'address': address,
+      'zip_code': postalCode,
+      'user_goal_type': 1,
+    }, token).then((response) => {
       if (response) {
-        navigation.navigate('HomeScreen');
+        navigation.navigate('ChoiceScreen');
       }
     });
   }
@@ -134,19 +120,13 @@ export default function PersonalInfoScreen() {
           onChangeText={setPostalCode}
           keyboardType="numeric"
         />
-
-        {/* Boutons pour joindre un fichier PDF et une vidéo */}
-        <View style={styles.fileButtons}>
-          <Button title="Joindre un PDF" onPress={pickPdfFile} variant="button" color="button_bg" />
-          <Button title="Joindre une vidéo" onPress={pickVideoFile} variant="button" color="button_bg" />
-        </View>
       </Card>
 
       {/* Footer */}
       <Card>
         <Button
           title="CONTINUER"
-          onPress={() => handleRegister()}
+          onPress={() => handleRegisterProfile()}
           variant="button"
           color="button_bg"
         />
@@ -192,6 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.light.field1_bg,
     marginBottom: hp('1%'),
+    color: '#FFFFFF',
   },
   fileButtons: {
     flexDirection: 'row',

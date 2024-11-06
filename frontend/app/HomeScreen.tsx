@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform  } from "react-native";
+import React, { useEffect, useState, useRef } from 'react';
+import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -9,13 +9,17 @@ import { Video, ResizeMode } from 'expo-av';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import useAuthToken from '@/hooks/useAuthToken';
 
-type NavigationProp = StackNavigationProp<{ ProfilScreen: undefined; }>;
+type NavigationProp = StackNavigationProp<{
+  ProfilScreen: any;
+  LoginScreen: any;
+}>;
 
 export default function HomeScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-
+  const { token, state } = useAuthToken();
   const [modalVisible, setModalVisible] = useState(false);
   const videoRef = useRef<Video>(null);
 
@@ -23,18 +27,26 @@ export default function HomeScreen() {
     setModalVisible(true);
     StatusBar.setHidden(true);
   };
-
   const closeModal = () => {
     setModalVisible(false);
     StatusBar.setHidden(false);
   };
 
+  useEffect(() => {
+    if (state == "loaded") {
+      if (token == null) {
+        navigation.navigate('LoginScreen');
+      }
+    }
+  }, [state, token]);
+
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
       {/* Header */}
       <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
-        <Image 
-          source={require("@/assets/images/logo.png")} 
+        <Image
+          source={require("@/assets/images/logo.png")}
           resizeMode='contain'
           style={styles.logo}
         />
@@ -62,52 +74,52 @@ export default function HomeScreen() {
           animationType="fade"
           onRequestClose={closeModal}
         >
-        <View style={styles.modalContainer}>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            style={styles.carouselContainer}
-            showsHorizontalScrollIndicator={false}
-          >
+          <View style={styles.modalContainer}>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              style={styles.carouselContainer}
+              showsHorizontalScrollIndicator={false}
+            >
 
-            {/* Modal pour afficher le carrousel avec l'image et la vidéo */}
+              {/* Modal pour afficher le carrousel avec l'image et la vidéo */}
 
-            {/* Image en plein écran */}
-            <View style={styles.carouselItem}>
-              <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                <Image
-                  source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
-                  style={styles.fullScreenImage}
-                  resizeMode="contain"
+              {/* Image en plein écran */}
+              <View style={styles.carouselItem}>
+                <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+                  <Image
+                    source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
+                    style={styles.fullScreenImage}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* Vidéo en plein écran */}
+              <View style={styles.carouselItem}>
+                <Video
+                  ref={videoRef}
+                  source={{ uri: 'https://videos.pexels.com/video-files/9046239/9046239-uhd_1440_2560_24fps.mp4' }}
+                  style={styles.fullScreenVideo}
+                  resizeMode={ResizeMode.CONTAIN}
+                  shouldPlay
+                  onPlaybackStatusUpdate={(status) => {
+                    if (status.didJustFinish) {
+                      videoRef.current?.stopAsync();
+                    }
+                  }}
+                  useNativeControls
                 />
-              </TouchableOpacity>
-            </View>
-
-            {/* Vidéo en plein écran */}
-            <View style={styles.carouselItem}>
-              <Video
-                ref={videoRef}
-                source={{ uri: 'https://videos.pexels.com/video-files/9046239/9046239-uhd_1440_2560_24fps.mp4' }}
-                style={styles.fullScreenVideo}
-                resizeMode={ResizeMode.CONTAIN}
-                shouldPlay
-                onPlaybackStatusUpdate={(status) => {
-                  if (status.didJustFinish) {
-                    videoRef.current?.stopAsync();
-                  }
-                }}
-                useNativeControls
-              />
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
       ) : (
         <View>
           <ThemedText>Web platform</ThemedText>
         </View>
       )}
-      
+
 
       {/* Footer */}
       <Card style={styles.footer}>

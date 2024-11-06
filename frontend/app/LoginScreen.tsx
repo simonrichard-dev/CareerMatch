@@ -12,20 +12,20 @@ import Row from "@/components/Row";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { axiosPost } from '@/services/axios-fetch';
+import { axiosGet, axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 
 
 type NavigationProp = StackNavigationProp<{
   RegisterScreen: any;
   HomeScreen: any;
+  ProfilScreen: any;
 }>;
 
 export default function LoginScreen() {
   const { saveToken } = useAuthToken();
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -38,11 +38,29 @@ export default function LoginScreen() {
       if (response && response.data.access) {
 
         saveToken(response.data.access).then(() => {
-          navigation.navigate('HomeScreen');
+          loadUser(response.data.access);
         });
       }
     });
   }
+
+  async function loadUser(new_token: string) {
+    try {
+      const response = await axiosGet('/api/users/me/', new_token);
+      if (response?.data) {
+        console.log('Donnée trouvée:', response.data);
+        if (response.data['profile'] == null) {
+          navigation.navigate('ProfilScreen');
+        } else {
+        navigation.navigate('HomeScreen');}
+      } else {
+        console.log('Aucune donnée trouvée');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    }
+  }
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
