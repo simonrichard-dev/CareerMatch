@@ -84,7 +84,7 @@ export default function ProposalScreen2() {
   );
 
   return (
-    <SafeAreaView style={[styles.container ]}>
+    <SafeAreaView style={[styles.container]}>
 
       {/* Header */}
       <Row style={[styles.header]}>
@@ -105,26 +105,26 @@ export default function ProposalScreen2() {
       <Card style={[styles.card]}>
         {/* Job Types */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Card style={styles.scrollcard}>
+          <Card style={{ ...styles.scrollcard, width: "100%" }}>
             <ThemedText variant="title2" color="title2">Métiers</ThemedText>
 
-              {['Backend', 'Frontend', 'Fullstack', 'Web/Mobile', 'Cybersécurité', 'DevOps', 'SRE', 'AR/VR', 'Machine Learning'].map((job) =>
-                renderButton(job, selectedJobs, setSelectedJobs)
-              )}
-          </Card>
-        {/* Technologies */}
-          <Card style={styles.scrollcard}>
+            {['Backend', 'Frontend', 'Fullstack', 'Web/Mobile', 'Cybersécurité', 'DevOps', 'SRE', 'AR/VR', 'Machine Learning'].map((job) =>
+              renderButton(job, selectedJobs, setSelectedJobs)
+            )}
+          </Card >
+          {/* Technologies */}
+          <Card style={{ ...styles.scrollcard, width: "100%" }}>
             <ThemedText variant="title2" color="title2">Technologies</ThemedText>
-              {['JavaScript', 'Python', 'PHP', 'HTML', 'CSS', 'C#', 'C++', 'Java', 'Ruby', 'TypeScript', 'Node.js', 'Flask', 'Django', 'Vue.js', 'React Native'].map((tech) =>
-                renderButton(tech, selectedTechs, setSelectedTechs)
-              )}
+            {['JavaScript', 'Python', 'PHP', 'HTML', 'CSS', 'C#', 'C++', 'Java', 'Ruby', 'TypeScript', 'Node.js', 'Flask', 'Django', 'Vue.js', 'React Native'].map((tech) =>
+              renderButton(tech, selectedTechs, setSelectedTechs)
+            )}
           </Card>
-        {/* Contract Type */}
-          <Card style={styles.scrollcard}>
+          {/* Contract Type */}
+          <Card style={{ ...styles.scrollcard, width: "100%" }}>
             <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
-              {['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance', 'Projet'].map((contract) =>
-                renderButton(contract, selectedContract, setSelectedContract)
-              )}
+            {['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance', 'Projet'].map((contract) =>
+              renderButton(contract, selectedContract, setSelectedContract)
+            )}
           </Card>
         </ScrollView>
       </Card>
@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollcard: {
-    backgroundColor: '#F0FF00'
+    backgroundColor: '#F0FF00',
+
   },
   header: {
     padding: hp('2%'),
@@ -169,6 +170,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    backgroundColor: '#FF0000',
   },
   button: {
     margin: wp('1%'),
