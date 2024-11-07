@@ -14,6 +14,7 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosGet, axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
+import { Colors } from '@/constants/Colors';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -63,11 +64,11 @@ export default function LoginScreen() {
 
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
 
       {/* Header */}
 
-      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -83,7 +84,7 @@ export default function LoginScreen() {
 
       {/* Body */}
       <Card style={[styles.card1]}>
-        <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
+        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
           <ThemedText variant="title2" color="title2">Connexion</ThemedText>
         </Row>
         <Card style={[styles.card2]}>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     width: wp('85%'),
   },
   card1: {
-    backgroundColor: "#00FF00",
+    backgroundColor: Colors.light.tint,
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,

@@ -36,7 +36,7 @@ export default function ChoiceScreen() {
 
   function handleContinue() {
     if (choice) {
-      axiosPost('/user/choice/', { choice }) // changer le endpoint
+      axiosPost('/auth/profile/', { choice })
         .then((response) => {
           console.log(response?.data);
           navigation.navigate('ProposalScreen');

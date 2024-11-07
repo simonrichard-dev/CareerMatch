@@ -22,14 +22,14 @@ const Button = ({ title, onPress, variant = "button", color = "button_bg", ...re
       style={[styles.button, Styles[variant], { backgroundColor: themeColors[color] }]}
       onPress={onPress}
     >
-      <Text style={[styles.text, { color: themeColors[variant] }]}>{title}</Text>
+      <Text style={[styles.text, Styles[variant], { backgroundColor: themeColors[color] }]}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    width: wp('65%'),
+    width: wp('40%'),
     maxWidth: 340,
     height: 52,
     justifyContent: 'center',

@@ -75,7 +75,7 @@ export default function ProposalScreen() {
     if (videoFile) {
       formData.append('video_file', videoFile);
     }
-  
+
     axiosPost('/api/proposals/', formData, token, {
       'Content-Type': 'multipart/form-data',
     }).then((response) => {
@@ -93,9 +93,9 @@ export default function ProposalScreen() {
       onPress={() => {
         setSelectedTags((prevState) => {
           if (prevState.includes(tag['id'])) {
-            return prevState.filter(item => item !== tag['id']); // Deselect
+            return prevState.filter(item => item !== tag['id']);
           }
-          return [...prevState, tag['id']]; // Select
+          return [...prevState, tag['id']];
         });
       }}
     >
@@ -109,7 +109,7 @@ export default function ProposalScreen() {
       setCvFile(result.output[0]);
     }
   }
-  
+
   async function selectVideoFile() {
     const result = await DocumentPicker.getDocumentAsync({ type: "video/*" });
     if (result.output && result.output.length > 0) {
@@ -134,64 +134,64 @@ export default function ProposalScreen() {
           <ThemedText variant="button" color="button">S'inscrire</ThemedText>
         </TouchableOpacity>
       </Row>
-        
-        {/* Job Types */}
-        <View style={styles.section}>
-          <ThemedText variant="title2" color="title2">Métiers</ThemedText>
-          <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {tags.filter(tag => tag['category'] == 1).map((tag) =>
-              <Fragment key={tag['id']}>
-                {renderButtonTag(tag)}
-              </Fragment>
-            )}
-          </ScrollView>
-        </View>
 
-        {/* Technologies */}
-        <View style={styles.section}>
-          <ThemedText variant="title2" color="title2">Technologies</ThemedText>
-          <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {tags.filter(tag => tag['category'] == 2).map((tag) =>
-              <Fragment key={tag['id']}>
-                {renderButtonTag(tag)}
-              </Fragment>
-            )}
-          </ScrollView>
-        </View>
+      {/* Job Types */}
+      <View style={styles.section}>
+        <ThemedText variant="title2" color="title2">Métiers</ThemedText>
+        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
+          {tags.filter(tag => tag['category'] == 1).map((tag) =>
+            <Fragment key={tag['id']}>
+              {renderButtonTag(tag)}
+            </Fragment>
+          )}
+        </ScrollView>
+      </View>
 
-        {/* Contract Type */}
-        <View style={styles.section}>
-          <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
-          <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {tags.filter(tag => tag['category'] == 3).map((tag) =>
-              <Fragment key={tag['id']}>
-                {renderButtonTag(tag)}
-              </Fragment>
-            )}
-          </ScrollView>
-        </View>
+      {/* Technologies */}
+      <View style={styles.section}>
+        <ThemedText variant="title2" color="title2">Technologies</ThemedText>
+        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
+          {tags.filter(tag => tag['category'] == 2).map((tag) =>
+            <Fragment key={tag['id']}>
+              {renderButtonTag(tag)}
+            </Fragment>
+          )}
+        </ScrollView>
+      </View>
 
-        <Card>
-          <TouchableOpacity onPress={selectCVFile}>
-            <ThemedText variant="button">Sélectionner un CV</ThemedText>
-          </TouchableOpacity>
-          {cvFile && <ThemedText>{cvFile.name}</ThemedText>}
+      {/* Contract Type */}
+      <View style={styles.section}>
+        <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
+        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
+          {tags.filter(tag => tag['category'] == 3).map((tag) =>
+            <Fragment key={tag['id']}>
+              {renderButtonTag(tag)}
+            </Fragment>
+          )}
+        </ScrollView>
+      </View>
 
-          <TouchableOpacity onPress={selectVideoFile}>
-            <ThemedText variant="button">Sélectionner une Vidéo</ThemedText>
-          </TouchableOpacity>
-          {videoFile && <ThemedText>{videoFile.name}</ThemedText>}
-        </Card>
+      <Card>
+        <TouchableOpacity onPress={selectCVFile}>
+          <ThemedText variant="button">Sélectionner un CV</ThemedText>
+        </TouchableOpacity>
+        {cvFile && <ThemedText>{cvFile.name}</ThemedText>}
 
-        {/* Footer */}
-        <Card>
-          <Button
-            title="CONFIRMER"
-            onPress={handleChoices}
-            variant="button"
-            color="button_bg"
-          />
-        </Card>
+        <TouchableOpacity onPress={selectVideoFile}>
+          <ThemedText variant="button">Sélectionner une Vidéo</ThemedText>
+        </TouchableOpacity>
+        {videoFile && <ThemedText>{videoFile.name}</ThemedText>}
+      </Card>
+
+      {/* Footer */}
+      <Card>
+        <Button
+          title="CONFIRMER"
+          onPress={handleChoices}
+          variant="button"
+          color="button_bg"
+        />
+      </Card>
     </SafeAreaView>
   );
 }

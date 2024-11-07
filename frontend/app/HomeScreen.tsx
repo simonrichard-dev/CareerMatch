@@ -10,6 +10,27 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import useAuthToken from '@/hooks/useAuthToken';
+import { axiosGet } from '@/services/axios-fetch';
+
+interface ProposalData {
+  id: number;
+  author: {
+    id: number,
+    email: string,
+    profile: {
+      first_name: string,
+      last_name: string,
+    }
+  };
+  tags: {
+    id: number;
+    name: string;
+    category: number;
+  }[];
+  created_at: string;
+  proposal_file: string;
+  video_file?: string;
+}
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
@@ -36,15 +57,33 @@ export default function HomeScreen() {
     if (state == "loaded") {
       if (token == null) {
         navigation.navigate('LoginScreen');
+        return;
       }
+      loadProposals();
     }
   }, [state, token]);
 
 
+  async function loadProposals() {
+    if (!token) return;
+    try {
+      const response = await axiosGet('/api/matching/', token);
+      if (response?.data) {
+        const proposals = response.data as ProposalData[];
+        console.log('Donnée trouvée:', response.data);
+      } else {
+        console.log('Aucune donnée trouvée');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    }
+  }
+
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -81,8 +120,7 @@ export default function HomeScreen() {
               style={styles.carouselContainer}
               showsHorizontalScrollIndicator={false}
             >
-
-              {/* Modal pour afficher le carrousel avec l'image et la vidéo */}
+              {/* Carrousel with image and video */}
 
               {/* Image en plein écran */}
               <View style={styles.carouselItem}>
