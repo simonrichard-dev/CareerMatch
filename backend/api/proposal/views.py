@@ -5,7 +5,7 @@ from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser
 
 from backend.permissions import HaveProfile
 
@@ -27,7 +27,7 @@ class TagViewSet(
 
 
 class ProposalViewSet(viewsets.ModelViewSet):
-    parser_class = (FileUploadParser,)
+    parser_class = (MultiPartParser, FileUploadParser,)
 
     def get_queryset(self):
         if self.action in {'list', 'retrieve'}:

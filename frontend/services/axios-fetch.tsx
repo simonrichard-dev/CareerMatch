@@ -77,20 +77,20 @@ Axios.interceptors.response.use(function (response) {
 });
 
 
-export async function axiosPost(url: string, data: any, token?: string | null) {
+export async function axiosPost(url: string, data: any, token?: string | null, headers: any = {}) {
     try {
         let resp: AxiosResponse<any, any>;
         if (token) {
             resp = await Axios.post(url, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...headers
                 }
             });
         }
         else {
-            resp = await Axios.post(url, data);
+            resp = await Axios.post(url, data, headers);
         }
-        resp = await Axios.post(url, data);
         return resp;
     } catch (error) {
         Toast.show({

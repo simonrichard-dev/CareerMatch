@@ -9,7 +9,7 @@ from .models import Proposal
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'category',)
 
 
 class ProposalSerializerBase(serializers.ModelSerializer):
@@ -21,8 +21,6 @@ class ProposalSerializerBase(serializers.ModelSerializer):
             'id',
             'created_at',
             'updated_at',
-            'title',
-            'description',
             'tags',
         )
 
@@ -35,8 +33,6 @@ class ProposalSerializer(ProposalSerializerBase):
             'id',
             'created_at',
             'updated_at',
-            'title',
-            'description',
             'author',
             'tags',
             'proposal_file',
@@ -62,7 +58,7 @@ class ProposalUpsertSerializer(ProposalSerializerBase):
     )
 
     class Meta(ProposalSerializerBase.Meta):
-        fields = ('title', 'description', 'tags', 'proposal_file', 'video_file',)
+        fields = ('tags', 'proposal_file', 'video_file',)
 
     def validate(self, data):
         return data

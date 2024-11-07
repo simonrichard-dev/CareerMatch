@@ -46,17 +46,6 @@ class Proposal(BaseModel):
         help_text='If this value set True, users can access this proposal.',
     )
 
-    title = models.CharField(
-        max_length=100,
-        verbose_name='Title',
-        help_text='Title of this proposal.',
-    )
-    description = models.TextField(
-        max_length=500,
-        verbose_name='Description',
-        help_text='Description of this proposal.',
-    )
-
     tags = models.ManyToManyField(
         Tag,
         related_name='tags',

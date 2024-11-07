@@ -1,6 +1,6 @@
 // frontend/app/screens/ProposalScreen.tsx
-
-import React, { useState, useEffect } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Image, SafeAreaView, StyleSheet, TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import Card from '@/components/Card';
 import Row from "@/components/Row";
@@ -12,6 +12,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Button from '@/components/Button';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Colors } from '@/constants/Colors';
+import Toast from 'react-native-toast-message';
+import useAuthToken from '@/hooks/useAuthToken';
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
@@ -22,11 +24,13 @@ type NavigationProp = StackNavigationProp<{
 export default function ChoicesScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
+  const { token } = useAuthToken();
 
-  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
-  const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
-  const [selectedContract, setSelectedContract] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Fetch available tags for jobs, technologies, and contracts
@@ -44,17 +48,27 @@ export default function ChoicesScreen() {
     loadTags();
   }, []);
 
-  // Handle the button click to store the selected choices
   function handleChoices() {
-    const selectedJobIds = tags.filter(tag => selectedJobs.includes(tag.name)).map(tag => tag.id);
-    const selectedTechIds = tags.filter(tag => selectedTechs.includes(tag.name)).map(tag => tag.id);
-    const selectedContractId = tags.find(tag => selectedContract.includes(tag.name)).map((tag: { id: any; }) => tag.id);
+    if (!cvFile) {
+      Toast.show({
+        type: 'error',
+        text1: "Veuillez sélectionner un CV.",
+      });
+      return;
+    }
 
-    // Post the data to the server (adjust endpoint if necessary)
-    axiosPost('/api/proposals/', {
-      'title': "title",
-      'description': "description",
-      "tags": []
+    let formData = new FormData();
+    selectedTags.forEach(tag => {
+      formData.append('tags', tag.toString());
+    });
+    formData.append('proposal_file', cvFile);
+
+    if (videoFile) {
+      formData.append('video_file', videoFile);
+    }
+  
+    axiosPost('/api/proposals/', formData, token, {
+      'Content-Type': 'multipart/form-data',
     }).then((response) => {
       if (response) {
         navigation.navigate('HomeScreen');
@@ -64,21 +78,35 @@ export default function ChoicesScreen() {
     });
   }
 
-  const renderButton = (label: string, selectedItems: string[], setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>) => (
+  const renderButtonTag = (tag: any) => (
     <TouchableOpacity
-      style={[styles.button, selectedItems.includes(label) && styles.selectedButton]}
+      style={[styles.button, selectedTags.includes(tag['id']) && styles.selectedButton]}
       onPress={() => {
-        setSelectedItems((prevState) => {
-          if (prevState.includes(label)) {
-            return prevState.filter(item => item !== label); // Deselect
+        setSelectedTags((prevState) => {
+          if (prevState.includes(tag['id'])) {
+            return prevState.filter(item => item !== tag['id']); // Deselect
           }
-          return [...prevState, label]; // Select
+          return [...prevState, tag['id']]; // Select
         });
       }}
     >
-      <Text style={styles.buttonText}>{label}</Text>
+      <Text style={styles.buttonText}>{tag['name']}</Text>
     </TouchableOpacity>
   );
+
+  async function selectCVFile() {
+    const result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
+    if (result.output && result.output.length > 0) {
+      setCvFile(result.output[0]);
+    }
+  }
+  
+  async function selectVideoFile() {
+    const result = await DocumentPicker.getDocumentAsync({ type: "video/*" });
+    if (result.output && result.output.length > 0) {
+      setVideoFile(result.output[0]);
+    }
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
@@ -102,8 +130,10 @@ export default function ChoicesScreen() {
         <View style={styles.section}>
           <ThemedText variant="title2" color="title2">Métiers</ThemedText>
           <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {['Backend', 'Frontend', 'Fullstack', 'Web/Mobile', 'Cybersécurité', 'DevOps', 'SRE', 'AR/VR', 'Machine Learning'].map((job) =>
-              renderButton(job, selectedJobs, setSelectedJobs)
+            {tags.filter(tag => tag['category'] == 1).map((tag) =>
+              <Fragment key={tag['id']}>
+                {renderButtonTag(tag)}
+              </Fragment>
             )}
           </ScrollView>
         </View>
@@ -112,8 +142,10 @@ export default function ChoicesScreen() {
         <View style={styles.section}>
           <ThemedText variant="title2" color="title2">Technologies</ThemedText>
           <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {['JavaScript', 'Python', 'PHP', 'HTML', 'CSS', 'C#', 'C++', 'Java', 'Ruby', 'TypeScript', 'Node.js', 'Flask', 'Django', 'Vue.js', 'React Native'].map((tech) =>
-              renderButton(tech, selectedTechs, setSelectedTechs)
+            {tags.filter(tag => tag['category'] == 2).map((tag) =>
+              <Fragment key={tag['id']}>
+                {renderButtonTag(tag)}
+              </Fragment>
             )}
           </ScrollView>
         </View>
@@ -122,11 +154,25 @@ export default function ChoicesScreen() {
         <View style={styles.section}>
           <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
           <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-            {['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance', 'Projet'].map((contract) =>
-              renderButton(contract, selectedContract, setSelectedContract)
+            {tags.filter(tag => tag['category'] == 3).map((tag) =>
+              <Fragment key={tag['id']}>
+                {renderButtonTag(tag)}
+              </Fragment>
             )}
           </ScrollView>
         </View>
+
+        <Card>
+          <TouchableOpacity onPress={selectCVFile}>
+            <ThemedText variant="button">Sélectionner un CV</ThemedText>
+          </TouchableOpacity>
+          {cvFile && <ThemedText>{cvFile.name}</ThemedText>}
+
+          <TouchableOpacity onPress={selectVideoFile}>
+            <ThemedText variant="button">Sélectionner une Vidéo</ThemedText>
+          </TouchableOpacity>
+          {videoFile && <ThemedText>{videoFile.name}</ThemedText>}
+        </Card>
 
         {/* Footer */}
         <Card>
