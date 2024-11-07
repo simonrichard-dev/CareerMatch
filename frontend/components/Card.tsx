@@ -4,7 +4,7 @@ import { View, ViewStyle, type ViewProps } from "react-native";
 type Props = ViewProps;
 
 const Card = ({ style, ...rest }: Props) => (
-  <View style={[style, styles]} {...rest} />
+  <View style={[styles, style]} {...rest} />
 );
 
 const styles: ViewStyle = {

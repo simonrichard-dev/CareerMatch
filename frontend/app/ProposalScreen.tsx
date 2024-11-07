@@ -19,15 +19,24 @@ type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
   HomeScreen: any;
   RegisterScreen: any;
+  LoginScreen: any;
 }>;
 
-export default function ChoicesScreen() {
+export default function ProposalScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-  const { token } = useAuthToken();
-
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+  const { token, state } = useAuthToken();
+
+  useEffect(() => {
+    if (state == "loaded") {
+      if (token == null) {
+        navigation.navigate('LoginScreen');
+      }
+    }
+  }, [state, token]);
+
 
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
