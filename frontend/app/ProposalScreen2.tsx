@@ -1,7 +1,7 @@
-// frontend/app/ChoiceScreen.tsx
+// frontend/app/ChoiceScreen2.tsx
 
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, Image, TouchableOpacity, View, Text, ScrollView } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -12,6 +12,7 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosGet, axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
+import { Colors } from '@/constants/Colors';
 
 type NavigationProp = StackNavigationProp<{
   ProposalScreen: any;
@@ -19,13 +20,15 @@ type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
 }>;
 
-export default function ChoiceScreen() {
+export default function ProposalScreen2() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
   const [choice, setChoice] = useState<string | null>(null);
   const { token, state } = useAuthToken();
   const [tags, setTags] = useState<any[]>([]);
-
+  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
+  const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
+  const [selectedContract, setSelectedContract] = useState<string[]>([]);
 
 
   useEffect(() => {
@@ -64,11 +67,27 @@ export default function ChoiceScreen() {
     }
   }
 
+  const renderButton = (label: string, selectedItems: string[], setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>) => (
+    <TouchableOpacity
+      style={[styles.button, selectedItems.includes(label) && styles.selectedButton]}
+      onPress={() => {
+        setSelectedItems((prevState) => {
+          if (prevState.includes(label)) {
+            return prevState.filter(item => item !== label); // Deselect
+          }
+          return [...prevState, label]; // Select
+        });
+      }}
+    >
+      <Text style={styles.buttonText}>{label}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <SafeAreaView style={[styles.container, ]}>
+    <SafeAreaView style={[styles.container ]}>
 
       {/* Header */}
-      <Row style={[styles.header, ]}>
+      <Row style={[styles.header]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -84,31 +103,30 @@ export default function ChoiceScreen() {
 
       {/* Body */}
       <Card style={[styles.card]}>
-      <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
-          <ThemedText variant="title2" color="title2">Quelle recherche ?</ThemedText>
-        </Row>
+        {/* Job Types */}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Card style={styles.scrollcard}>
+            <ThemedText variant="title2" color="title2">Métiers</ThemedText>
 
-        <View style={styles.choiceContainer}>
-          <TouchableOpacity
-            style={[
-              styles.choiceButton,
-              choice === 'recherche' && styles.choiceButtonSelected
-            ]}
-            onPress={() => setChoice('recherche')}
-          >
-            <ThemedText variant="button" color="button">Rechercher un talent</ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.choiceButton,
-              choice === 'proposition' && styles.choiceButtonSelected
-            ]}
-            onPress={() => setChoice('proposition')}
-          >
-            <ThemedText variant="button" color="button">Proposer son talent</ThemedText>
-          </TouchableOpacity>
-        </View>
+              {['Backend', 'Frontend', 'Fullstack', 'Web/Mobile', 'Cybersécurité', 'DevOps', 'SRE', 'AR/VR', 'Machine Learning'].map((job) =>
+                renderButton(job, selectedJobs, setSelectedJobs)
+              )}
+          </Card>
+        {/* Technologies */}
+          <Card style={styles.scrollcard}>
+            <ThemedText variant="title2" color="title2">Technologies</ThemedText>
+              {['JavaScript', 'Python', 'PHP', 'HTML', 'CSS', 'C#', 'C++', 'Java', 'Ruby', 'TypeScript', 'Node.js', 'Flask', 'Django', 'Vue.js', 'React Native'].map((tech) =>
+                renderButton(tech, selectedTechs, setSelectedTechs)
+              )}
+          </Card>
+        {/* Contract Type */}
+          <Card style={styles.scrollcard}>
+            <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
+              {['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance', 'Projet'].map((contract) =>
+                renderButton(contract, selectedContract, setSelectedContract)
+              )}
+          </Card>
+        </ScrollView>
       </Card>
 
       {/* Footer */}
@@ -129,6 +147,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     width: wp('100%'),
+    padding: hp('2%'),
+  },
+  card: {
+    width: wp('95%'),
+    padding: hp('2%'),
+    flex: 1,
+  },
+  scrollcard: {
+    backgroundColor: '#F0FF00'
   },
   header: {
     padding: hp('2%'),
@@ -136,43 +163,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
-  button: {
-    color: '#FFFFFF',
-    backgroundColor: '#E5B65E',
-    fontSize: 20,
-    lineHeight: 22,
-    fontWeight: "bold" as "bold",
-  },
-  card: {
-    backgroundColor: "#00FF00",
-    width: wp('85%'),
-    padding: hp('2%'),
-    flex: 1,
-  },
-  title: {
-    paddingBottom: hp('1%'),
-    textAlign: 'center',
-    color: '#E5B65E',
-    width: wp('85%'),
-  },
-  choiceContainer: {
+  section: {
     marginTop: hp('2%'),
-    flex: 1,
-    backgroundColor: '#E5E4E6',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: wp('85%'),
   },
-  choiceButton: {
-    padding: hp('2%'),
-    backgroundColor: "#E5B65E",
-    marginVertical: hp('1%'),
-    alignItems: 'center',
+  scrollContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  button: {
+    margin: wp('1%'),
+    padding: hp('1.5%'),
     borderRadius: 8,
-    width: wp('60%'),
+    backgroundColor: Colors.light.button_bg,
   },
-  choiceButtonSelected: {
-    backgroundColor: "#4CAF50",
+  selectedButton: {
+    backgroundColor: '#0bb808',
+    opacity: 0.65
+  },
+  buttonText: {
+    fontSize: 16,
+    color: Colors.light.button,
   },
   logo: {
     width: wp('30%'),

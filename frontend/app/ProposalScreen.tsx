@@ -12,14 +12,16 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Button from '@/components/Button';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Colors } from '@/constants/Colors';
+import useAuthToken from '@/hooks/useAuthToken';
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
   HomeScreen: any;
   RegisterScreen: any;
+  LoginScreen: any;
 }>;
 
-export default function ChoicesScreen() {
+export default function ProposalScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
 
@@ -27,6 +29,16 @@ export default function ChoicesScreen() {
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [selectedContract, setSelectedContract] = useState<string[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+  const { token, state } = useAuthToken();
+
+  useEffect(() => {
+    if (state == "loaded") {
+      if (token == null) {
+        navigation.navigate('LoginScreen');
+      }
+    }
+  }, [state, token]);
+
 
   useEffect(() => {
     // Fetch available tags for jobs, technologies, and contracts
