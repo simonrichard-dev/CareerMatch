@@ -5,6 +5,9 @@ from backend.permissions import HaveProfile
 from backend.choices import UserMatchState
 from backend.choices import UserNotificationState
 
+from api.proposal.models import Proposal
+from api.proposal.serializers import ProposalSerializer
+
 from .models import User
 from .models import UserMatch
 from .models import UserNotification
@@ -35,6 +38,24 @@ class MeUserViewSet(
     def list(self, request):
         data = UserSerializer(self.request.user).data
         return Response(data, status=status.HTTP_200_OK)
+
+
+class MeUserProposalViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    serializer_class = ProposalSerializer
+    permission_classes = [
+        permissions.IsAuthenticated,
+        HaveProfile
+    ]
+
+    def get_queryset(self):
+        return Proposal.objects.filter(
+            author=self.request.user,
+            is_published=True,
+            deleted_at__isnull=True
+        )
 
 
 class MeUserMatchesViewSet(
