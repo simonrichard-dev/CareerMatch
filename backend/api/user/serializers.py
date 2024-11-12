@@ -9,7 +9,12 @@ from .models import UserNotification
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'last_name']
+        fields = [
+            'first_name',
+            'last_name',
+            'address',
+            'zip_code',
+        ]
 
 
 class UserSerializerBase(serializers.ModelSerializer):

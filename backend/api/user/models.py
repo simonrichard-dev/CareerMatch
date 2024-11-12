@@ -31,11 +31,6 @@ class UserProfile(models.Model):
         max_length=100,
         null=False,
     )
-    last_name = models.CharField(
-        verbose_name='Last Name',
-        max_length=100,
-        null=False,
-    )
     address = models.CharField(
         verbose_name='Address',
         max_length=100,
@@ -49,7 +44,7 @@ class UserProfile(models.Model):
     user_goal_type = models.IntegerField(
         choices=UserGoalType.choices,
         verbose_name='User Goal Type',
-        default=UserGoalType.COLLABORATOR,
+        default=UserGoalType.CV,
         null=False,
     )
 

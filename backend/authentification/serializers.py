@@ -22,10 +22,6 @@ class PostUserProfileRegisterSerializer(serializers.ModelSerializer):
             'user_goal_type': {'required': True},
         }
 
-    def create(self, validated_data):
-        user_profile = UserProfile.objects.create(**validated_data)
-        return user_profile
-
 
 class PutUserProfileRegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,15 +40,6 @@ class PutUserProfileRegisterSerializer(serializers.ModelSerializer):
             'zip_code': {'required': False},
             'user_goal_type': {'required': False},
         }
-    
-    def update(self, instance: UserProfile, validated_data: dict):
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.address = validated_data.get('address', instance.address)
-        instance.zip_code = validated_data.get('zip_code', instance.zip_code)
-        instance.user_goal_type = validated_data.get('user_goal_type', instance.user_goal_type)
-        instance.save()
-        return instance
 
 
 class PostUserRegisterSerializer(serializers.ModelSerializer):

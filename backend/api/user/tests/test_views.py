@@ -58,14 +58,10 @@ class TestMeUserMatchesViewSet(TestCase):
         self.proposal1 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 1',
-            description='Test Description 1',
         )
         self.proposal2 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 2',
-            description='Test Description 2',
         )
         self.match1 = UserMatchFactory(
             user=self.user_withprofile,
@@ -81,8 +77,6 @@ class TestMeUserMatchesViewSet(TestCase):
         self.proposal3 = ProposalFactory(
             author=self.user_withprofile,
             is_published=True,
-            title='Test Proposal 3',
-            description='Test Description 3',
         )
         self.match3 = UserMatchFactory(
             user=self.superuser,
@@ -136,14 +130,10 @@ class TestMeUserNotificationsViewSet(TestCase):
         self.proposal1 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 1',
-            description='Test Description 1',
         )
         self.proposal2 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 2',
-            description='Test Description 2',
         )
         self.match1 = UserMatchFactory(
             user=self.user_withprofile,
@@ -159,8 +149,6 @@ class TestMeUserNotificationsViewSet(TestCase):
         self.proposal3 = ProposalFactory(
             author=self.user_withprofile,
             is_published=True,
-            title='Test Proposal 3',
-            description='Test Description 3',
         )
         self.match3 = UserMatchFactory(
             user=self.superuser,
@@ -171,8 +159,6 @@ class TestMeUserNotificationsViewSet(TestCase):
         self.proposal_notmatched = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 2',
-            description='Test Description 2',
         )
         self.match_notmatched = UserMatchFactory(
             user=self.user_withprofile,

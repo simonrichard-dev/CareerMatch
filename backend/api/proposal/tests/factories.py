@@ -2,6 +2,7 @@ import factory
 
 from api.proposal.models import Tag
 from api.proposal.models import Proposal
+from backend.choices import ProposalType
 
 from backend.choices import TagCategory
 
@@ -18,5 +19,4 @@ class ProposalFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Proposal
 
-    title = factory.Faker('sentence')
-    description = factory.Faker('text')
+    type = ProposalType.CV

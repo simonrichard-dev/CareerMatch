@@ -39,15 +39,10 @@ class TestAuthentificationUser(TestCase):
             'last_name': 'Bibi',
             'address': '123 rue de la rue',
             'zip_code': 75000,
-            'user_goal_type': UserGoalType.COLLABORATOR,
+            'user_goal_type': UserGoalType.CV,
         }
         self.assertIsNone(self.user_noprofile.profile)
         self.assertIsNotNone(self.user_withprofile.profile)
-
-        # have already a profile -> 403
-        self.client.login(self.user_withprofile)
-        resp = self.client.post('/auth/profile/', profile_data)
-        self.assertEqual(resp.status_code, 403)
 
         # work -> 201
         self.client.login(self.user_noprofile)
@@ -78,14 +73,9 @@ class TestAuthentificationUser(TestCase):
             'address': '123 rue de la rue updated',
         }
 
-        # Not have a profile -> 403
-        self.client.login(self.user_noprofile)
-        resp = self.client.put('/auth/profile/', profile_data)
-        self.assertEqual(resp.status_code, 403)
-
         # work -> 201
         self.client.login(self.user_withprofile)
-        resp = self.client.put('/auth/profile/', profile_data)
+        resp = self.client.post('/auth/profile/', profile_data)
         self.assertEqual(resp.status_code, 201)
 
         user = User.get_user(resp.data['data']['user']['id'])

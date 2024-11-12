@@ -27,7 +27,7 @@ class UserProfileFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('name')
     address = factory.Faker('address')
     zip_code = factory.Faker('zipcode')
-    user_goal_type = UserGoalType.COLLABORATOR
+    user_goal_type = UserGoalType.CV
 
 
 class UserMatchFactory(factory.django.DjangoModelFactory):
