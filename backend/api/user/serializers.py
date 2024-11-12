@@ -14,6 +14,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'address',
             'zip_code',
+            'user_goal_type'
         ]
 
 

@@ -1,19 +1,21 @@
 // frontend/app/CreateProposalScreen.tsx
 import * as DocumentPicker from 'expo-document-picker';
 import React, { useState, useEffect, Fragment } from 'react';
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
-import Card from '@/components/Card';
-import Row from "@/components/Row";
-import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { axiosGet, axiosPost } from '@/services/axios-fetch';
+import { StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Button from '@/components/Button';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+import Card from '@/components/Card';
+import ThemedText from '@/components/ThemedText';
+import { axiosGet, axiosPost } from '@/services/axios-fetch';
+import Button from '@/components/Button';
 import { Colors } from '@/constants/Colors';
 import Toast from 'react-native-toast-message';
 import useAuthToken from '@/hooks/useAuthToken';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
+import Section from '@/components/Container/Section';
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
@@ -23,11 +25,11 @@ type NavigationProp = StackNavigationProp<{
 }>;
 
 export default function CreateProposalScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [tags, setTags] = useState<any[]>([]);
   const { token, state } = useAuthToken();
+
+  const [tags, setTags] = useState<any[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (state == "loaded") {
@@ -117,25 +119,20 @@ export default function CreateProposalScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <Section>
       {/* Header */}
-
-      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('RegisterScreen')}
-        >
-          <ThemedText variant="button" color="button">S'inscrire</ThemedText>
-        </TouchableOpacity>
-      </Row>
+      <Header
+        btns={(
+          <>
+            <HeaderButton title='Home' onPress={() => {
+              navigation.navigate('HomeScreen');
+            }} />
+          </>
+        )}
+      />
 
       {/* Job Types */}
-      <ScrollView style={[styles.scrollviewStyle, { backgroundColor: colors.tint }]}>
+      <ScrollView style={[styles.scrollviewStyle]}>
         <ThemedText variant="title2" color="title2">Métiers</ThemedText>
         {tags.filter(tag => tag['category'] == 1).map((tag) =>
           <Fragment key={tag['id']}>
@@ -185,29 +182,16 @@ export default function CreateProposalScreen() {
           color="button_bg"
         />
       </Card>
-    </SafeAreaView>
+    </Section>
   );
 }
 
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    width: wp('100%'),
-    padding: hp('2%'),
-  },
   card: {
     width: wp('95%'),
     padding: hp('2%'),
     flex: 1,
-  },
-
-  header: {
-    padding: hp('2%'),
-    width: wp('85%'),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
   },
   section: {
     marginTop: hp('2%'),
@@ -223,11 +207,10 @@ const styles = StyleSheet.create({
     marginBottom: "1%",
     padding: hp('1.5%'),
     borderRadius: 8,
-    backgroundColor: Colors.light.button_bg,
+    backgroundColor: Colors.button_bg,
     width: wp('60%'),
     maxWidth: 340,
     alignItems: 'center',
-
   },
   selectedButton: {
     backgroundColor: '#0bb808',
@@ -235,17 +218,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    color: Colors.light.button,
-  },
-  logo: {
-    width: wp('30%'),
-    height: hp('15%'),
+    color: Colors.button,
   },
   scrollviewStyle: {
     marginTop: hp('2%'),
     width: "85%",
     alignContent: 'center',
-    backgroundColor: 'FF0',
+    backgroundColor: '#fff',
   }
 });
 

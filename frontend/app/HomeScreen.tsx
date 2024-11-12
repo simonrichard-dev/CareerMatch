@@ -1,19 +1,18 @@
 // frontend/app/HomeScreen.tsx
-
-
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform } from "react-native";
+import { StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import Button from '@/components/Button';
-import Row from "@/components/Row";
 import { Video, ResizeMode } from 'expo-av';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import useAuthToken from '@/hooks/useAuthToken';
-import { axiosGet } from '@/services/axios-fetch';
+import { API_HOST, axiosGet, axiosPost } from '@/services/axios-fetch';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
+import Section from '@/components/Container/Section';
 
 interface ProposalData {
   id: number;
@@ -42,10 +41,15 @@ type NavigationProp = StackNavigationProp<{
 }>;
 
 export default function HomeScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
   const { token, state } = useAuthToken();
+
+  const [inMatch, setInMatch] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [proposals, setProposals] = useState<ProposalData[]>([]);
+  const [index, setIndex] = useState(0);
+  const [proposalDisplayed, setProposalDisplayed] = useState<ProposalData | null>(null);
   const videoRef = useRef<Video>(null);
 
   const openModal = () => {
@@ -67,14 +71,22 @@ export default function HomeScreen() {
     }
   }, [state, token]);
 
-
   async function loadProposals() {
     if (!token) return;
+    console.log('Loading proposals...');
     try {
       const response = await axiosGet('/api/matching/', token);
       if (response?.data) {
-        const proposals = response.data as ProposalData[];
-        console.log('Donnée trouvée:', response.data);
+        const new_proposals = response.data['matching'] as ProposalData[];
+        console.log('NEW Matching list:', new_proposals);
+        setProposals(new_proposals);
+        setIndex(0);
+        if (new_proposals.length > 0) {
+          setProposalDisplayed(new_proposals[0]);
+        }
+        else {
+          setProposalDisplayed(null);
+        }
       } else {
         console.log('Aucune donnée trouvée');
       }
@@ -83,124 +95,167 @@ export default function HomeScreen() {
     }
   }
 
+  async function postProposal(state: number) {
+    if (!token || !proposalDisplayed) return;
+    await axiosPost('/api/matching/', {
+      'proposal': proposalDisplayed.id,
+      'state': state
+    }, token);
+  }
+
+  function nextProposal() {
+    if (index == proposals.length - 1) {
+      setProposalDisplayed(null);
+      loadProposals();
+      return;
+    }
+
+    const newIndex = (index + 1) % proposals.length;
+    setIndex(newIndex);
+    setProposalDisplayed(proposals[newIndex]);
+  }
+
+  function onMatch() {
+    if (inMatch) return;
+    setInMatch(true);
+
+    postProposal(1).then(() => {
+      nextProposal();
+      setInMatch(false);
+    })
+  }
+
+  function onUnMatch() {
+    if (inMatch) return;
+    setInMatch(true);
+
+    postProposal(2).then(() => {
+      nextProposal();
+      setInMatch(false);
+    })
+  }
+
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <Section>
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('ProfilScreen')}
-        >
-          <ThemedText variant="button" color="button">Profil</ThemedText>
-        </TouchableOpacity>
-      </Row>
+      <Header
+        btns={(
+          <>
+            <HeaderButton title='Profile' onPress={() => {
+              navigation.navigate('ProfilScreen');
+            }} />
+          </>
+        )}
+      />
 
-      {/* Body avec ScrollView pour permettre le défilement */}
-      <TouchableOpacity onPress={openModal}>
-        <Image
-          source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
-          style={styles.largeImage}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
+      {proposalDisplayed ? (
+        <>
+        {Platform.OS === 'android' || Platform.OS === 'ios' ? (
+          <>
+          <TouchableOpacity onPress={openModal}>
+            <Image
+              // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
+              // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+              source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
+              style={styles.largeImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
-      {Platform.OS === 'android' || Platform.OS === 'ios' ? (
-        <Modal
-          visible={modalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={closeModal}
-        >
-          <View style={styles.modalContainer}>
-            <ScrollView
-              horizontal
-              pagingEnabled
-              style={styles.carouselContainer}
-              showsHorizontalScrollIndicator={false}
-            >
-              {/* Carrousel with image and video */}
+          <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={closeModal}
+          >
+            <View style={styles.modalContainer}>
+              <ScrollView
+                horizontal
+                pagingEnabled
+                style={styles.carouselContainer}
+                showsHorizontalScrollIndicator={false}
+              >
 
-              {/* Image en plein écran */}
-              <View style={styles.carouselItem}>
-                <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                  <Image
-                    // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
-                    // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                    source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
-                    style={styles.fullScreenImage}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              </View>
+                {/* Image en plein écran */}
+                <View style={styles.carouselItem}>
+                  <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+                    <Image
+                      // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
+                      // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                      source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
+                      style={styles.fullScreenImage}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
 
-              {/* Vidéo en plein écran */}
-              <View style={styles.carouselItem}>
-                <Video
-                  ref={videoRef}
-                  // {API_HOST}/media/videos/SR_Vidéo.mp4
-                  // {API_HOST}{proposals[0].video_file}
-                  source={{ uri: 'https://videos.pexels.com/video-files/9046239/9046239-uhd_1440_2560_24fps.mp4' }}
-                  style={styles.fullScreenVideo}
-                  resizeMode={ResizeMode.CONTAIN}
-                  shouldPlay
-                  onPlaybackStatusUpdate={(status) => {
-                    if (status.didJustFinish) {
-                      videoRef.current?.stopAsync();
-                    }
-                  }}
-                  useNativeControls
-                />
-              </View>
-            </ScrollView>
-          </View>
-        </Modal>
+                {/* Vidéo en plein écran */}
+                {proposalDisplayed.video_file && (
+                  <View style={styles.carouselItem}>
+                    <Video
+                      ref={videoRef}
+                      // {API_HOST}/media/videos/SR_Vidéo.mp4
+                      // {API_HOST}{proposals[0].video_file}
+                      source={{ uri: `${API_HOST}${proposalDisplayed.video_file}` }}
+                      style={styles.fullScreenVideo}
+                      resizeMode={ResizeMode.CONTAIN}
+                      shouldPlay
+                      onPlaybackStatusUpdate={(status) => {
+                        if (status.didJustFinish) {
+                          videoRef.current?.stopAsync();
+                        }
+                      }}
+                      useNativeControls
+                    />
+                  </View>
+                )}
+              </ScrollView>
+            </View>
+          </Modal>
+          </>
+        ) : (
+          <View>
+              <ThemedText>Web platform</ThemedText>
+              <Image
+                // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
+                // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
+                style={styles.largeImage}
+                resizeMode="contain"
+              />
+            </View>
+        )}
+        </>
       ) : (
-        <View>
-          <ThemedText>Web platform</ThemedText>
+        <View style={styles.carouselItem}>
+          <ThemedText>No matching yet...</ThemedText>
         </View>
       )}
-
 
       {/* Footer */}
       <Card style={styles.footer}>
         <Button
           title="Je Like"
-          onPress={() => console.log("Liked!")}
+          onPress={() => onMatch()}
           variant="button"
           color="button_bg"
         />
         <Button
           title="Je Dislike"
-          onPress={() => console.log("Disliked!")}
+          onPress={() => onUnMatch()}
           variant="button"
           color="button_bg"
         />
       </Card>
-    </SafeAreaView>
+    </Section>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    width: wp('100%'),
-  },
   scrollContainer: {
     alignItems: 'center',
     width: wp('85%'),
-  },
-  header: {
-    padding: hp('2%'),
-    width: wp('85%'),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
   },
   footer: {
     width: wp('85%'),
@@ -217,11 +272,6 @@ const styles = StyleSheet.create({
     width: 'auto',
     marginTop: 10,
     marginBottom: 10,
-
-  },
-  logo: {
-    width: wp('30%'),
-    height: hp('15%'),
   },
   largeImage: {
     width: wp('100%'),

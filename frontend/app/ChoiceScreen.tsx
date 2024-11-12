@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity, View } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import Button from '@/components/Button';
 import Row from "@/components/Row";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,19 +11,21 @@ import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
 
 type NavigationProp = StackNavigationProp<{
   CreateProposalScreen: any;
   RegisterScreen: any;
   LoginScreen: any;
+  HomeScreen: any;
 }>;
 
 export default function ChoiceScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
-  const [choice, setChoice] = useState<string | null>(null);
   const { token, state } = useAuthToken();
 
+  const [choice, setChoice] = useState<string | null>(null);
 
   useEffect(() => {
     if (state == "loaded") {
@@ -47,26 +48,22 @@ export default function ChoiceScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <SafeAreaView style={[styles.container]}>
 
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('RegisterScreen')}
-        >
-          <ThemedText variant="button" color="button">S'inscrire</ThemedText>
-        </TouchableOpacity>
-      </Row>
+      <Header
+        btns={(
+          <>
+            <HeaderButton title='Home' onPress={() => {
+              navigation.navigate('HomeScreen');
+            }} />
+          </>
+        )}
+      />
 
       {/* Body */}
       <Card style={[styles.card]}>
-      <Row style={[styles.title, { backgroundColor: colors.tint }]}>
+      <Row style={[styles.title]}>
           <ThemedText variant="title2" color="title2">Quelle recherche ?</ThemedText>
         </Row>
 

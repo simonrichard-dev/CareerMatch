@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { axiosGet } from '@/services/axios-fetch';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 
@@ -24,7 +25,13 @@ export default function useAuthToken() {
     try {
       const storedToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
       if (storedToken) {
-        setToken(storedToken);
+        const response = await axiosGet('/api/users/me', storedToken);
+        if (response && response.data) {
+          setToken(storedToken);
+        }
+        else {
+          setToken(null); // Token invalid
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la récupération du token :", error);

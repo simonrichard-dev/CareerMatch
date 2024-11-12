@@ -1,18 +1,21 @@
 // frontend/app/screens/ProfilScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity, TextInput, View } from "react-native";
+import { StyleSheet, TouchableOpacity, TextInput, View } from "react-native";
 import Card from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import { Colors } from '@/constants/Colors';
 import Button from '@/components/Button';
-import Row from "@/components/Row";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { axiosPost, axiosGet } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
+import Title from '@/components/Title';
+import Section from '@/components/Container/Section';
+import { Text } from '@/components/Fields';
 
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
@@ -21,13 +24,14 @@ type NavigationProp = StackNavigationProp<{
 }>;
 
 export default function PersonalInfoScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
+  const { token, state } = useAuthToken();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const { token, state } = useAuthToken();
+  const [userGoal, setUserGoal] = useState<1 | 2>(1);
 
   useEffect(() => {
     if (state == "loaded") {
@@ -48,6 +52,7 @@ export default function PersonalInfoScreen() {
           setLastName(response.data.profile.last_name || '');
           setAddress(response.data.profile.address || '');
           setPostalCode(response.data.profile.zip_code || '');
+          setUserGoal(response.data.profile.user_goal_type || 1);
         }
       } catch (error) {
         console.error("Erreur lors du chargement des données utilisateur:", error);
@@ -62,7 +67,7 @@ export default function PersonalInfoScreen() {
       'last_name': lastName,
       'address': address,
       'zip_code': postalCode,
-      'user_goal_type': 1,
+      'user_goal_type': userGoal,
     }, token).then((response) => {
       if (response) {
         navigation.navigate('ChoiceScreen');
@@ -71,55 +76,71 @@ export default function PersonalInfoScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <Section>
+
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('LoginScreen')}
-        >
-          <ThemedText variant="button" color="button">Retour</ThemedText>
-        </TouchableOpacity>
-      </Row>
+      <Header
+        btns={(
+          <>
+            <HeaderButton title='Home' onPress={() => {
+              navigation.navigate('HomeScreen');
+            }} />
+          </>
+        )}
+      />
 
       {/* Body */}
       <Card style={[styles.card]}>
-        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
-          <ThemedText variant="title2" color="title2">Informations</ThemedText>
-        </Row>
-        <TextInput
+        <Title title='Informations' />
+        <Text
           style={styles.input}
           placeholder="Prénom"
-          placeholderTextColor={colors.field1}
           value={firstName}
-          onChangeText={setFirstName}
+          setValue={setFirstName}
         />
-        <TextInput
+        <Text
           style={styles.input}
           placeholder="Nom"
-          placeholderTextColor={colors.field1}
           value={lastName}
-          onChangeText={setLastName}
+          setValue={setLastName}
         />
-        <TextInput
+        <Text
           style={styles.input}
           placeholder="Adresse"
-          placeholderTextColor={colors.field1}
           value={address}
-          onChangeText={setAddress}
+          setValue={setAddress}
         />
-        <TextInput
+        <Text
           style={styles.input}
           placeholder="Code Postal"
-          placeholderTextColor={colors.field1}
           value={postalCode}
-          onChangeText={setPostalCode}
+          setValue={setPostalCode}
           keyboardType="numeric"
         />
+
+        <Title title='Quelle recherche ?' />
+        <View style={styles.choiceContainer}>
+          <TouchableOpacity
+            style={[
+              styles.choiceButton,
+              userGoal === 1 && styles.choiceButtonSelected
+            ]}
+            onPress={() => setUserGoal(1)}
+          >
+            <ThemedText variant="button" color="button">Partager une opportunité</ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.choiceButton,
+              userGoal === 2 && styles.choiceButtonSelected
+            ]}
+            onPress={() => setUserGoal(2)}
+          >
+            <ThemedText variant="button" color="button">Partager mon CV</ThemedText>
+          </TouchableOpacity>
+        </View>
+
       </Card>
 
       {/* Footer */}
@@ -131,36 +152,17 @@ export default function PersonalInfoScreen() {
           color="button_bg"
         />
       </Card>
-    </SafeAreaView>
+  
+    </Section>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    width: wp('100%'),
-  },
-  header: {
-    padding: hp('2%'),
-    width: wp('85%'),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
-  title: {
-    padding: hp('1.5%'),
-    backgroundColor: "#FFFFFF",
-    width: wp('85%'),
-  },
   card: {
     backgroundColor: "#FFF",
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,
-  },
-  logo: {
-    width: wp('30%'),
-    height: hp('15%'),
   },
   input: {
     fontSize: 20,
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
     height: 52,
     paddingHorizontal: 10,
     borderRadius: 12,
-    backgroundColor: Colors.light.field1_bg,
+    backgroundColor: Colors.field1_bg,
     marginBottom: hp('1%'),
     color: '#FFFFFF',
   },
@@ -177,5 +179,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: hp('2%'),
+  },
+
+  choiceContainer: {
+    marginTop: hp('2%'),
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: wp('85%'),
+  },
+  choiceButton: {
+    padding: hp('2%'),
+    backgroundColor: "#E5B65E",
+    marginVertical: hp('1%'),
+    alignItems: 'center',
+    borderRadius: 8,
+    width: wp('50%'),
+  },
+  choiceButtonSelected: {
+    backgroundColor: "#4CAF50",
   },
 });

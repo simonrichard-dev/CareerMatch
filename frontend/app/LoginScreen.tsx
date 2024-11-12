@@ -1,20 +1,18 @@
 // frontend/app/LoginScreen.tsx
-
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
-import Card from '@/components/Card';
-import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import Email from '@/components/Email';
-import Password from '@/components/Password';
-import Button from '@/components/Button';
-import Row from "@/components/Row";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { StyleSheet } from "react-native";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+
+import Card, { CardFooter } from '@/components/Card';
+import { Email, Password } from '@/components/Fields';
+import Button from '@/components/Button';
 import { axiosGet, axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
-import { Colors } from '@/constants/Colors';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
+import Title from '@/components/Title';
+import Section from '@/components/Container/Section';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -25,8 +23,8 @@ type NavigationProp = StackNavigationProp<{
 
 export default function LoginScreen() {
   const { saveToken } = useAuthToken();
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
+
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -62,88 +60,43 @@ export default function LoginScreen() {
     }
   }
 
-
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <Section>
 
       {/* Header */}
-
-      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('RegisterScreen')}
-        >
-          <ThemedText variant="button" color="button">S'inscrire</ThemedText>
-        </TouchableOpacity>
-      </Row>
+      <Header
+        btns={(
+          <>
+            <HeaderButton title="S'inscrire" onPress={() => {
+              navigation.navigate('RegisterScreen');
+            }} />
+          </>
+        )}
+      />
 
       {/* Body */}
-      <Card style={[styles.card1]}>
-        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
-          <ThemedText variant="title2" color="title2">Connexion</ThemedText>
-        </Row>
-        <Card style={[styles.card2]}>
-          <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
-          <Password variant="field1" color="field1" password={password} setPassword={setPassword} />
-        </Card>
+      <Card>
+        <Title title='Connexion' />
+        <Email variant="field1" color="field1" value={email} setValue={setEmail} />
+        <Password variant="field1" color="field1" value={password} setValue={setPassword} />
       </Card>
 
       {/* Footer */}
-
-      <Card>
+      <CardFooter>
         <Button
           title="SE CONNECTER"
           onPress={() => handleLogin()}
           variant="button"
           color="button_bg"
         />
-      </Card>
-    </SafeAreaView>
+      </CardFooter>
+
+    </Section>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    width: wp('100%'),
-  },
-  header: {
-    padding: hp('2%'),
-    backgroundColor: "#D3D4D5",
-    width: wp('85%'),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
-  body: {},
-  footer: {},
   button: {
-    padding: 10,
-  },
-  title: {
-    padding: hp('1.5%'),
-    backgroundColor: "#FF0000",
-    width: wp('85%'),
-  },
-  card1: {
-    backgroundColor: Colors.light.tint,
-    width: wp('85%'),
-    padding: hp('2%'),
-    flex: 1,
-  },
-  card2: {
-    backgroundColor: "#FFFFFF",
-    width: wp('85%'),
-    padding: hp('2%'),
-    flex: 1,
-  },
-  logo: {
-    width: wp('30%'),
-    height: hp('15%'),
+    
   },
 });

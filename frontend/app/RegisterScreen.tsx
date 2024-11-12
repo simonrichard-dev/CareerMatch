@@ -1,29 +1,27 @@
 // frontend/app/screens/LoginScreen.tsx
-
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, TouchableOpacity } from "react-native";
-import Card from '@/components/Card';
-import ThemedText from '@/components/ThemedText';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import Email from '@/components/Email';
-import Password from '@/components/Password';
-import Button from '@/components/Button';
-import Row from "@/components/Row";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import React, { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { StyleSheet } from "react-native";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+import Card from '@/components/Card';
+import { Email, Password } from '@/components/Fields';
+import Button from '@/components/Button';
 import { axiosPost } from '@/services/axios-fetch';
+import Header from '@/components/Container/Header';
+import HeaderButton from '@/components/Container/HeaderButton';
+import Title from '@/components/Title';
+import Section from '@/components/Container/Section';
+
 
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
-  ProfilScreen: any;
-
 }>;
 
-
 export default function RegisterScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
+  
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -40,31 +38,24 @@ export default function RegisterScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
+    <Section>
 
       {/* Header */}
-
-      <Row style={[styles.header, { backgroundColor: colors.tint}]}>
-        <Image 
-          source={require("@/assets/images/logo.png")} 
-          resizeMode='contain'
-          style={styles.logo}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('LoginScreen')}
-        >
-          <ThemedText variant="button" color="button">Retour</ThemedText>
-        </TouchableOpacity>
-      </Row>
-
+      <Header
+        btns={(
+          <>
+            <HeaderButton title='Login' onPress={() => {
+              navigation.navigate('LoginScreen');
+            }} />
+          </>
+        )}
+      />
+  
     {/* Body */}
       <Card style={[styles.card]}>
-        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
-          <ThemedText variant="title2" color="title2">Créer un compte</ThemedText>
-        </Row>
-        <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
-        <Password variant="field1" color="field1" password={password} setPassword={setPassword} />        
+        <Title title='Créer un compte' />
+        <Email variant="field1" color="field1" value={email} setValue={setEmail} />
+        <Password variant="field1" color="field1" value={password} setValue={setPassword} />        
       </Card>
 
     {/* Footer */}
@@ -76,41 +67,19 @@ export default function RegisterScreen() {
           variant="button"
           color="button_bg"
         />
-      </Card>      
-    </SafeAreaView>
+      </Card>
+    
+    </Section>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    width: wp('100%'),
-  },
-  header: {
-    padding: hp('2%'),
-    backgroundColor: "#D3D4D5",
-    width: wp('85%'),
-    justifyContent: 'space-between', // Ajoute cet élément pour espacer le logo et le bouton
-    flexDirection: 'row', // Assure-toi que les éléments sont alignés horizontalement
-  },
-  body: {},
-  footer: {},
   button: {
-    padding: 10, // Ajuste le padding selon tes besoins
-    
-  },
-  title: {
-    padding: hp('1.5%'),
-    width: wp('85%'),
+    padding: 10,
   },
   card: {
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,
-  },
-  logo: {
-    width: wp('30%'),
-    height: hp('15%'),
   },
 });
