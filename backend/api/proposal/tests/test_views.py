@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from backend.test import TestCase
 
 from api.proposal.models import Proposal
+from api.proposal.serializers import ProposalSerializer
 
 IMAGE_PATH = os.path.join(settings.BASE_DIR, "media/proposals/cv_1.pdf")
 
@@ -55,6 +56,8 @@ class TestProposalViewSet(TestCase):
             self.assertEqual(resp.status_code, 201)
 
             proposal = Proposal.get_proposal(resp.data['data']['id'])
+            serializer = ProposalSerializer(proposal)
+            print(serializer.data)
 
             # for key in [
             #     'title',

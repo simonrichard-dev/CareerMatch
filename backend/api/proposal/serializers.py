@@ -1,3 +1,4 @@
+import os
 from rest_framework import serializers
 
 from api.user.serializers import UserSerializer
@@ -27,6 +28,20 @@ class ProposalSerializerBase(serializers.ModelSerializer):
 
 class ProposalSerializer(ProposalSerializerBase):
     author = UserSerializer()
+    proposal_imgs_files = serializers.SerializerMethodField()
+
+    def get_proposal_imgs_files(self, obj: Proposal):
+        file_path = obj.proposal_file.name
+        if not file_path:
+            return []
+        file_name = file_path.split('/')[-1].replace('.pdf', '')
+        files = []
+        for i in range(0, 3):
+            file_path_img = f'media/{os.path.dirname(file_path)}/imgs/{file_name}_{i}.jpg'
+            if not os.path.exists(file_path_img):
+                break
+            files.append(file_path_img)
+        return files
 
     class Meta(ProposalSerializerBase.Meta):
         fields = (
@@ -37,6 +52,7 @@ class ProposalSerializer(ProposalSerializerBase):
             'tags',
             'proposal_file',
             'video_file',
+            'proposal_imgs_files',
         )
 
 
