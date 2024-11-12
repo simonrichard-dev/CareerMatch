@@ -14,7 +14,7 @@ import { axiosPost } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 
 type NavigationProp = StackNavigationProp<{
-  ProposalScreen: any;
+  CreateProposalScreen: any;
   RegisterScreen: any;
   LoginScreen: any;
 }>;
@@ -39,7 +39,7 @@ export default function ChoiceScreen() {
       axiosPost('/auth/profile/', { choice })
         .then((response) => {
           console.log(response?.data);
-          navigation.navigate('ProposalScreen');
+          navigation.navigate('CreateProposalScreen');
         });
     } else {
       console.log("Veuillez faire un choix avant de continuer.");

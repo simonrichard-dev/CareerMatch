@@ -33,6 +33,7 @@ interface ProposalData {
   created_at: string;
   proposal_file: string;
   video_file?: string;
+  proposal_imgs_files: string[];
 }
 
 type NavigationProp = StackNavigationProp<{
@@ -129,6 +130,8 @@ export default function HomeScreen() {
               <View style={styles.carouselItem}>
                 <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
                   <Image
+                    // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
+                    // {API_HOST}{proposals[0].proposal_imgs_files[0]}
                     source={{ uri: 'https://images.pexels.com/photos/13290760/pexels-photo-13290760.jpeg' }}
                     style={styles.fullScreenImage}
                     resizeMode="contain"
@@ -140,6 +143,8 @@ export default function HomeScreen() {
               <View style={styles.carouselItem}>
                 <Video
                   ref={videoRef}
+                  // {API_HOST}/media/videos/SR_Vidéo.mp4
+                  // {API_HOST}{proposals[0].video_file}
                   source={{ uri: 'https://videos.pexels.com/video-files/9046239/9046239-uhd_1440_2560_24fps.mp4' }}
                   style={styles.fullScreenVideo}
                   resizeMode={ResizeMode.CONTAIN}

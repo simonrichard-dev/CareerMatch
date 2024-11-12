@@ -46,8 +46,8 @@ export default function PersonalInfoScreen() {
         if (response && response.data && response.data.profile) {
           setFirstName(response.data.profile.first_name || '');
           setLastName(response.data.profile.last_name || '');
-          // setAddress(response.data.address || '');
-          // setPostalCode(response.data.postalCode || '');
+          setAddress(response.data.profile.address || '');
+          setPostalCode(response.data.profile.zip_code || '');
         }
       } catch (error) {
         console.error("Erreur lors du chargement des données utilisateur:", error);
