@@ -1,8 +1,7 @@
 // frontend/app/index.tsx
 
-import ProposalScreen2 from "./ProposalScreen2";
-import LoginScreen from "./LoginScreen";
+import HomeScreen from "./HomeScreen";
 
 export default function Home() {
-  return <LoginScreen/>;
+  return <HomeScreen/>;
 }

@@ -1,7 +1,7 @@
-// frontend/app/screens/ProposalScreen.tsx
+// frontend/app/CreateProposalScreen.tsx
 import * as DocumentPicker from 'expo-document-picker';
 import React, { useState, useEffect, Fragment } from 'react';
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Card from '@/components/Card';
 import Row from "@/components/Row";
 import ThemedText from '@/components/ThemedText';
@@ -22,7 +22,7 @@ type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
 }>;
 
-export default function ProposalScreen() {
+export default function CreateProposalScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation<NavigationProp>();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -42,7 +42,6 @@ export default function ProposalScreen() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
 
   useEffect(() => {
-    // Fetch available tags for jobs, technologies, and contracts
     const loadTags = async () => {
       try {
         const response = await axiosGet('/api/proposals/tags/');
@@ -121,7 +120,7 @@ export default function ProposalScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
       {/* Header */}
 
-      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -136,52 +135,46 @@ export default function ProposalScreen() {
       </Row>
 
       {/* Job Types */}
-      <View style={styles.section}>
+      <ScrollView style={[styles.scrollviewStyle, { backgroundColor: colors.tint }]}>
         <ThemedText variant="title2" color="title2">Métiers</ThemedText>
-        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-          {tags.filter(tag => tag['category'] == 1).map((tag) =>
-            <Fragment key={tag['id']}>
-              {renderButtonTag(tag)}
-            </Fragment>
-          )}
-        </ScrollView>
-      </View>
+        {tags.filter(tag => tag['category'] == 1).map((tag) =>
+          <Fragment key={tag['id']}>
+            {renderButtonTag(tag)}
+          </Fragment>
+        )}
 
-      {/* Technologies */}
-      <View style={styles.section}>
+        {/* Technologies */}
         <ThemedText variant="title2" color="title2">Technologies</ThemedText>
-        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-          {tags.filter(tag => tag['category'] == 2).map((tag) =>
-            <Fragment key={tag['id']}>
-              {renderButtonTag(tag)}
-            </Fragment>
-          )}
-        </ScrollView>
-      </View>
+        {tags.filter(tag => tag['category'] == 2).map((tag) =>
+          <Fragment key={tag['id']}>
+            {renderButtonTag(tag)}
+          </Fragment>
+        )}
 
-      {/* Contract Type */}
-      <View style={styles.section}>
+        {/* Contract Type */}
         <ThemedText variant="title2" color="title2">Type de contrat</ThemedText>
-        <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
-          {tags.filter(tag => tag['category'] == 3).map((tag) =>
-            <Fragment key={tag['id']}>
-              {renderButtonTag(tag)}
-            </Fragment>
-          )}
-        </ScrollView>
-      </View>
+        {tags.filter(tag => tag['category'] == 3).map((tag) =>
+          <Fragment key={tag['id']}>
+            {renderButtonTag(tag)}
+          </Fragment>
+        )}
+      </ScrollView>
 
-      <Card>
-        <TouchableOpacity onPress={selectCVFile}>
-          <ThemedText variant="button">Sélectionner un CV</ThemedText>
-        </TouchableOpacity>
-        {cvFile && <ThemedText>{cvFile.name}</ThemedText>}
 
-        <TouchableOpacity onPress={selectVideoFile}>
-          <ThemedText variant="button">Sélectionner une Vidéo</ThemedText>
-        </TouchableOpacity>
-        {videoFile && <ThemedText>{videoFile.name}</ThemedText>}
-      </Card>
+      <Button
+        title={cvFile ? `${cvFile.name}` : "Sélectionner un CV"}
+        onPress={selectCVFile}
+        variant="button"
+        color="button_bg"
+      />
+
+      <Button
+        title={videoFile ? `${videoFile.name}` : "Sélectionner une vidéo"}
+        onPress={selectVideoFile}
+        variant="button"
+        color="button_bg"
+      />
+
 
       {/* Footer */}
       <Card>
@@ -196,6 +189,7 @@ export default function ProposalScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -204,27 +198,36 @@ const styles = StyleSheet.create({
     padding: hp('2%'),
   },
   card: {
-    backgroundColor: "#FFF",
-    width: wp('85%'),
+    width: wp('95%'),
     padding: hp('2%'),
     flex: 1,
   },
+
   header: {
-    paddingBottom: hp('2%'),
-    alignItems: 'center',
+    padding: hp('2%'),
+    width: wp('85%'),
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   section: {
     marginTop: hp('2%'),
+    width: "85%"
   },
   scrollContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   button: {
-    margin: wp('1%'),
+    margin: "auto",
+    marginTop: "1%",
+    marginBottom: "1%",
     padding: hp('1.5%'),
     borderRadius: 8,
     backgroundColor: Colors.light.button_bg,
+    width: wp('60%'),
+    maxWidth: 340,
+    alignItems: 'center',
+
   },
   selectedButton: {
     backgroundColor: '#0bb808',
@@ -238,4 +241,11 @@ const styles = StyleSheet.create({
     width: wp('30%'),
     height: hp('15%'),
   },
+  scrollviewStyle: {
+    marginTop: hp('2%'),
+    width: "85%",
+    alignContent: 'center',
+    backgroundColor: 'FF0',
+  }
 });
+

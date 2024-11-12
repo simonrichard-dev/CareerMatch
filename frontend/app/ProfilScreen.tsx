@@ -73,7 +73,7 @@ export default function PersonalInfoScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.testrouge }]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -88,7 +88,7 @@ export default function PersonalInfoScreen() {
 
       {/* Body */}
       <Card style={[styles.card]}>
-        <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
+        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
           <ThemedText variant="title2" color="title2">Informations</ThemedText>
         </Row>
         <TextInput
@@ -143,18 +143,17 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: hp('2%'),
-    backgroundColor: "#D3D4D5",
     width: wp('85%'),
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
   title: {
     padding: hp('1.5%'),
-    backgroundColor: "#FF0000",
+    backgroundColor: "#FFFFFF",
     width: wp('85%'),
   },
   card: {
-    backgroundColor: "#00FF00",
+    backgroundColor: "#FFF",
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,

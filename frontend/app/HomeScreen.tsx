@@ -1,3 +1,6 @@
+// frontend/app/HomeScreen.tsx
+
+
 import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, View, StatusBar, ScrollView, Dimensions, Platform } from "react-native";
 import Card from '@/components/Card';
@@ -207,6 +210,9 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     width: 'auto',
+    marginTop: 10,
+    marginBottom: 10,
+
   },
   logo: {
     width: wp('30%'),

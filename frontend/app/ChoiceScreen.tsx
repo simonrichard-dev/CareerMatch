@@ -47,10 +47,10 @@ export default function ChoiceScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.testrouge }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
 
       {/* Header */}
-      <Row style={[styles.header, { backgroundColor: colors.testbleu }]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint }]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -66,7 +66,7 @@ export default function ChoiceScreen() {
 
       {/* Body */}
       <Card style={[styles.card]}>
-      <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
+      <Row style={[styles.title, { backgroundColor: colors.tint }]}>
           <ThemedText variant="title2" color="title2">Quelle recherche ?</ThemedText>
         </Row>
 
@@ -78,7 +78,7 @@ export default function ChoiceScreen() {
             ]}
             onPress={() => setChoice('recherche')}
           >
-            <ThemedText variant="button" color="button">Rechercher un talent</ThemedText>
+            <ThemedText variant="button" color="button">Partager une opportunité</ThemedText>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -88,7 +88,7 @@ export default function ChoiceScreen() {
             ]}
             onPress={() => setChoice('proposition')}
           >
-            <ThemedText variant="button" color="button">Proposer son talent</ThemedText>
+            <ThemedText variant="button" color="button">Partager mon CV</ThemedText>
           </TouchableOpacity>
         </View>
       </Card>
@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold" as "bold",
   },
   card: {
-    backgroundColor: "#00FF00",
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,
@@ -140,7 +139,6 @@ const styles = StyleSheet.create({
   choiceContainer: {
     marginTop: hp('2%'),
     flex: 1,
-    backgroundColor: '#E5E4E6',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     width: wp('85%'),
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: hp('1%'),
     alignItems: 'center',
     borderRadius: 8,
-    width: wp('60%'),
+    width: wp('50%'),
   },
   choiceButtonSelected: {
     backgroundColor: "#4CAF50",

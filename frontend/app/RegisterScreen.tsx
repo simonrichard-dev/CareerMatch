@@ -44,7 +44,7 @@ export default function RegisterScreen() {
 
       {/* Header */}
 
-      <Row style={[styles.header, { backgroundColor: colors.testrouge}]}>
+      <Row style={[styles.header, { backgroundColor: colors.tint}]}>
         <Image 
           source={require("@/assets/images/logo.png")} 
           resizeMode='contain'
@@ -60,7 +60,7 @@ export default function RegisterScreen() {
 
     {/* Body */}
       <Card style={[styles.card]}>
-        <Row style={[styles.title, { backgroundColor: colors.title1 }]}>
+        <Row style={[styles.title, { backgroundColor: colors.tint }]}>
           <ThemedText variant="title2" color="title2">Créer un compte</ThemedText>
         </Row>
         <Email variant="field1" color="field1" email={email} setEmail={setEmail} />
@@ -102,11 +102,9 @@ const styles = StyleSheet.create({
   },
   title: {
     padding: hp('1.5%'),
-    backgroundColor: "#FF0000",
     width: wp('85%'),
   },
   card: {
-    backgroundColor: "#00FF00",
     width: wp('85%'),
     padding: hp('2%'),
     flex: 1,

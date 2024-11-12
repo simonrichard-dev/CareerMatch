@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollcard: {
-    backgroundColor: '#F0FF00',
+    // backgroundColor: '#F0FF00',
 
   },
   header: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: '#FF0000',
+    // backgroundColor: '#FF0000',
   },
   button: {
     margin: wp('1%'),

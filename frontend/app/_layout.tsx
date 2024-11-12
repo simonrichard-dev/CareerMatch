@@ -11,9 +11,7 @@ export default function RootLayout() {
       <Stack.Screen name="ProfilScreen" />
       <Stack.Screen name="HomeScreen" />
       <Stack.Screen name="ChoiceScreen" />
-      <Stack.Screen name="ProposalScreen" />
-      <Stack.Screen name="ProposalScreen2" />
-
+      <Stack.Screen name="CreateProposalScreen" />
     </Stack>
     <Toast />
     </>
