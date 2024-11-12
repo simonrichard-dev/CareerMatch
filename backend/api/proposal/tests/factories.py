@@ -17,6 +17,3 @@ class TagFactory(factory.django.DjangoModelFactory):
 class ProposalFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Proposal
-
-    title = factory.Faker('sentence')
-    description = factory.Faker('text')

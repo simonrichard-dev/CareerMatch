@@ -12,20 +12,14 @@ class TestMeUserViewSet(TestCase):
         self.proposal1 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 1',
-            description='Test Description 1',
         )
         self.proposal2 = ProposalFactory(
             author=self.superuser,
             is_published=True,
-            title='Test Proposal 2',
-            description='Test Description 2',
         )
         self.proposal3 = ProposalFactory(
             author=self.user_withprofile,
             is_published=True,
-            title='Test Proposal 3',
-            description='Test Description 3',
         )
 
     def test_list(self):
