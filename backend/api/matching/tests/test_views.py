@@ -2,24 +2,48 @@ from backend.test import TestCase
 
 from api.proposal.tests.factories import ProposalFactory
 from api.user.models import UserMatch
+from api.user.tests.factories import UserFactory
+from api.user.tests.factories import UserProfileFactory
 
+from backend.choices import UserGoalType
 from backend.choices import UserMatchState
+from backend.choices import ProposalType
 
 
 class TestMeUserViewSet(TestCase):
     def setUp(self):
         super().setUp()
+        self.user_announcement = UserFactory()
+        UserProfileFactory(
+            user=self.user_announcement,
+            user_goal_type=UserGoalType.ANNOUNCEMENT,
+        )
+
         self.proposal1 = ProposalFactory(
             author=self.superuser,
             is_published=True,
+            type = ProposalType.CV
         )
         self.proposal2 = ProposalFactory(
             author=self.superuser,
             is_published=True,
+            type = ProposalType.CV
         )
         self.proposal3 = ProposalFactory(
             author=self.user_withprofile,
             is_published=True,
+            type = ProposalType.CV
+        )
+
+        self.proposal4 = ProposalFactory(
+            author=self.user_withprofile,
+            is_published=True,
+            type = ProposalType.ANNOUNCEMENT
+        )
+        self.proposal5 = ProposalFactory(
+            author=self.user_withprofile,
+            is_published=True,
+            type = ProposalType.ANNOUNCEMENT
         )
 
     def test_list(self):
@@ -118,3 +142,16 @@ class TestMeUserViewSet(TestCase):
         user_match.refresh_from_db()
 
         self.assertEqual(user_match.state, UserMatchState.DISMATCHED)
+
+    def test_list_announcement(self):
+        self.client.login(self.user_announcement)
+        resp = self.client.get('/api/matching/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data['matching']), 2)
+        self.assertEqual(
+            set(item['id'] for item in resp.data['matching']),
+            {
+                self.proposal4.id,
+                self.proposal5.id
+            },
+        )

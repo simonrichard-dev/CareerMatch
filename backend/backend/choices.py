@@ -2,8 +2,13 @@ from django.db import models
 
 
 class UserGoalType(models.IntegerChoices):
-    COLLABORATOR = 1, 'Collaborator'
-    COLLABORATION = 2, 'Collaboration'
+    CV = 1, 'CV'
+    ANNOUNCEMENT = 2, 'Announcement'
+
+
+class ProposalType(models.IntegerChoices):
+    CV = 1, 'CV'
+    ANNOUNCEMENT = 2, 'Announcement'
 
 
 class TagCategory(models.IntegerChoices):

@@ -39,7 +39,7 @@ class TestAuthentificationUser(TestCase):
             'last_name': 'Bibi',
             'address': '123 rue de la rue',
             'zip_code': 75000,
-            'user_goal_type': UserGoalType.COLLABORATOR,
+            'user_goal_type': UserGoalType.CV,
         }
         self.assertIsNone(self.user_noprofile.profile)
         self.assertIsNotNone(self.user_withprofile.profile)

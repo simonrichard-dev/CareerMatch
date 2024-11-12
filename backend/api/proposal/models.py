@@ -2,6 +2,7 @@ from django.db import models
 
 from backend.models import BaseModel
 from backend.choices import TagCategory
+from backend.choices import ProposalType
 
 from api.user.models import User
 
@@ -67,6 +68,13 @@ class Proposal(BaseModel):
         blank=True,
         verbose_name='Video File',
         help_text='Upload a video file related to this proposal.',
+    )
+
+    type = models.IntegerField(
+        choices=ProposalType.choices,
+        verbose_name='Proposal Type',
+        default=ProposalType.CV,
+        null=False,
     )
 
     @staticmethod

@@ -3,6 +3,9 @@ from api.user.models import UserMatch
 
 from api.proposal.models import Proposal
 
+from backend.choices import ProposalType
+from backend.choices import UserGoalType
+
 
 class UserManagerProposal:
     user: User
@@ -18,9 +21,14 @@ class UserManagerProposal:
     def generate_matching(self):
         user_matches = self.get_user_matches()
         user_matches_ids = [user_match.proposal_id for user_match in user_matches]
-        
+
+        type_proposal = ProposalType.CV
+        if self.user.profile.user_goal_type == UserGoalType.ANNOUNCEMENT:
+            type_proposal = ProposalType.ANNOUNCEMENT
+
         proposals = Proposal.objects.filter(
             is_published=True,
+            type=type_proposal
         ).exclude(id__in=user_matches_ids).exclude(author_id=self.user_id)
 
         return proposals

@@ -44,7 +44,7 @@ class UserProfile(models.Model):
     user_goal_type = models.IntegerField(
         choices=UserGoalType.choices,
         verbose_name='User Goal Type',
-        default=UserGoalType.COLLABORATOR,
+        default=UserGoalType.CV,
         null=False,
     )
 
