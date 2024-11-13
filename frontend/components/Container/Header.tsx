@@ -16,12 +16,13 @@ const Header = ({ children }: Props) => {
         
       </View>
       <View style={[styles.headerCenter]}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          resizeMode='contain'
-          style={styles.logo}
-        />
-      </View>
+        <View style={[styles.logoBgUI]} />
+          <Image
+            source={require("@/assets/images/logo.png")}
+            resizeMode='contain'
+            style={styles.logo}
+          />
+        </View>
       <View style={[styles.headerRight]}>
         {children}
       </View>
@@ -35,22 +36,32 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     justifyContent: 'space-between',
     flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   headerLeft: {
     flex: 1
   },
   headerCenter: {
-
+    display: "flex",
+    alignItems: "center",
   },
   headerRight: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     flex: 1
   },
 
   logo: {
     width: wp('30%'),
     height: hp('15%'),
+  },
+  logoBgUI: {
+    backgroundColor: "#fff3e3c7",
+    position: "absolute",
+    width: wp('25%'),
+    height: hp('25%'),
+    borderRadius: hp('16%'),
+    top: hp('-1%'),
   },
   button: {
     padding: 10,

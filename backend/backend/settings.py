@@ -163,3 +163,10 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'backend.exceptions.exception_handler_rest',
 }
+
+# JWT configurations
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=10),
+}

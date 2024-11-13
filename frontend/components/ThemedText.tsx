@@ -55,6 +55,27 @@ const stylesText = StyleSheet.create({
     padding: 8,
     borderRadius: 15,
   },
+  tab: {
+    fontSize: 24,
+    lineHeight: 22,
+    fontWeight: "bold",
+    padding: 17,
+    borderRadius: 2,
+    borderColor: Colors.button_bg,
+    borderWidth: 3,
+    borderTopWidth: 0
+  },
+  tab_selected: {
+    fontSize: 24,
+    lineHeight: 22,
+    fontWeight: "bold",
+    padding: 17,
+    borderRadius: 2,
+    borderColor: Colors.button_bg,
+    borderWidth: 4,
+    borderTopWidth: 0,
+    backgroundColor: "#d7ffd9"
+  },
 });
 
 type Props = TextProps & {

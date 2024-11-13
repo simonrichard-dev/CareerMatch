@@ -81,7 +81,7 @@ export default function RegisterScreen() {
         <LineBreak />
         
         <Password variant="field1" color="field1" value={password} setValue={setPassword} />
-        <Password variant="field1" color="field1" placeholder="Confirmation Mot de passe" value={passwordConfirm} setValue={setPasswordConfirm} />
+        <Password variant="field1" color="field1" placeholder="Confirmation" value={passwordConfirm} setValue={setPasswordConfirm} />
       </Card>
 
       {/* Footer */}

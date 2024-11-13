@@ -8,7 +8,7 @@ import ThemedText from './ThemedText';
 
 
 type Props = TextProps & {
-  title: string;
+  title: string | JSX.Element;
   onPress: () => void;
   variant?: keyof typeof Styles;
   color?: keyof typeof Colors;

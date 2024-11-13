@@ -1,11 +1,13 @@
 // frontend/components/MatchLine.tsx
 import { useState } from "react";
-import { type ViewProps, StyleSheet, TouchableOpacity, View } from "react-native";
+import { type ViewProps, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Fontisto from '@expo/vector-icons/Fontisto';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import ThemedText from "./ThemedText";
+import LineBreak from "./LineBreak";
 
 interface Props extends ViewProps {
   match: MatchData;
@@ -51,6 +53,45 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
       ]}>
 
         <View style={[styles.lineLeft]}>
+          <View
+            style={{
+              position: 'absolute',
+              left: -75
+            }}
+          >
+            {match.proposal.type == 1 ? (
+              <MaterialIcons
+                name="announcement"
+                size={50}
+                color={
+                  status == 1 ? (
+                    "#a7a7a7"
+                  ) : status == 2 ? (
+                    "#d5d5d5"
+                  ) : (
+                    "#d5d5d5"
+                  )
+                }
+              />
+            ) : (
+              <MaterialIcons
+                name="announcement"
+                size={50}
+                color="black"
+              />
+            )}
+            <Text style={{
+              textAlign: "center",
+              fontSize: 18,
+              color: status == 1 ? (
+                  "#a7a7a7"
+                ) : status == 2 ? (
+                  "#d5d5d5"
+                ) : (
+                  "#d5d5d5"
+                )
+            }}>#{match.id}</Text>
+          </View>
           <View style={[styles.lineTags]}>
             {match.proposal.tags.map((tag) => (
               <ThemedText
@@ -60,16 +101,36 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
               </ThemedText>
             ))}
           </View>
-          <ThemedText variant="text">
-            {match.proposal.type == 1 ? "CV " : "Offre "}
-            Match #{match.id} - 
+          <ThemedText variant="text" styles={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            <View>
+              {method == "received" ? (
+                <>{match.user.profile?.first_name} {match.user.profile?.last_name}</>
+              ) : (
+                <>{match.proposal.author.profile.first_name} {match.proposal.author.profile.last_name}</>
+              )}
+            </View>
             {status == 2 && (
               <>
-                {method == "received" ? (
-                  <>Email: {match.user.email}</>
-                ) : (
-                  <>Email: {match.proposal.author.email}</>
-                )}
+              <LineBreak />
+              <View>
+                <AntDesign name="contacts" size={24} color="#b68200" />
+                <Text
+                  style={{
+                    marginLeft: 15,
+                    fontSize: 20,
+                    color: "#d29600",
+                  }}
+                >
+                  {method == "received" ? (
+                    <>{match.user.email}</>
+                  ) : (
+                    <>{match.proposal.author.email}</>
+                  )}
+                </Text>
+              </View>
               </>
             )}
           </ThemedText>
@@ -111,8 +172,7 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
                 <TouchableOpacity
                   onPress={() => onRemove()}
                 >
-                <Ionicons name="remove-circle-sharp" size={30} color="white"
-                  style={{ flex: 1, width: "100%" }}/>
+                  <AntDesign name="closecircle" size={30} color="white" style={{ flex: 1, width: "100%" }} />
                 </TouchableOpacity>
               </>
             )}
@@ -126,10 +186,18 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
 const styles = StyleSheet.create({
   line: {
     padding: hp('1.5%'),
-    width: "100%",
+    width: "80%",
+    margin: "auto",
     marginBottom: hp('1%'),
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    borderWidth: 2,
+    borderColor: "#c3c3c3",
+    borderBottomWidth: 5,
+    borderBottomColor: "#c4c4c4",
+    borderRadius: 10,
+    shadowOffset: {width: 0, height: 5},
+    shadowColor: '#b9b9b9',
   },
 
   linePending: {

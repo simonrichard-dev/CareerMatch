@@ -28,6 +28,7 @@ export default function PersonalInfoScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { token, state, permUser } = useAuthToken();
 
+  const [loading, setLoading] = useState(true);
   const [inUpdate, setInUpdate] = useState(false);
 
   const [firstName, setFirstName] = useState('');
@@ -42,39 +43,37 @@ export default function PersonalInfoScreen() {
       if (token == null) {
         navigation.navigate('LoginScreen');
       }
-
       permUser();
+  
+      loadUserData();
     }
   }, [state, token]);
 
-  useEffect(() => {
+  const loadUserData = async () => {
     if (!token) return;
-
-    const loadUserData = async () => {
-      const response = await axiosGet('/api/users/me', token);
-      if (response.error) {
-        if (response.status == 401) {
-          // Non connecté
-          navigation.navigate('LoginScreen');
-          return;
-        }
-        toastError("Erreur lors du chargement des données utilisateur:");
+  
+    setLoading(true);
+    const response = await axiosGet('/api/users/me', token);
+    if (response.error) {
+      if (response.status == 401) {
+        // Non connecté
+        navigation.navigate('LoginScreen');
         return;
       }
+      setLoading(false);
+      return;
+    }
+    if (response.data && response.data.profile) {
+      setInUpdate(true);
 
-      if (response.data && response.data.profile) {
-        setInUpdate(true);
-
-        setFirstName(response.data.profile.first_name || '');
-        setLastName(response.data.profile.last_name || '');
-        setAddress(response.data.profile.address || '');
-        setPostalCode(response.data.profile.zip_code || '');
-        setUserGoal(response.data.profile.user_goal_type || 1);
-      }
-    };
-
-    loadUserData();
-  }, [token]);
+      setFirstName(response.data.profile.first_name || '');
+      setLastName(response.data.profile.last_name || '');
+      setAddress(response.data.profile.address || '');
+      setPostalCode(response.data.profile.zip_code || '');
+      setUserGoal(response.data.profile.user_goal_type || 1);
+    }
+    setLoading(false);
+  };
 
   function handleRegisterProfile() {
     axiosPost('/auth/profile/', {
@@ -119,9 +118,7 @@ export default function PersonalInfoScreen() {
 
       {/* Header */}
       <Header>
-        {inUpdate && (
-          <Navbar page='profil' />
-        )}
+        {inUpdate ? <Navbar page='profil' /> : <></>}
       </Header>
 
       {/* Body */}

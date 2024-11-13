@@ -2,11 +2,14 @@
 import { View, StyleSheet, type ViewProps, ImageBackground } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
+
 type Props = ViewProps;
 
-const Card = ({ style, ...rest }: Props) => {
+const Card = ({ style, children, ...rest }: Props) => {
   return (
-    <View style={[styles.card, style]} {...rest} />
+    <View style={[styles.card, style]} {...rest}>
+      {children}
+    </View>
   )
 };
 
@@ -23,10 +26,10 @@ const styles = StyleSheet.create({
     padding: 10,
     width: wp('85%'),
     flex: 1,
-    paddingTop: hp('5%'),
+    paddingTop: hp('3%'),
     backgroundColor: "#fff",
     borderRadius: 10,
-    borderColor: '#b3b3b3',
+    borderColor: '#ffe8c9',
     borderWidth: 3,
     borderTopWidth: 5,
     borderTopColor: '#eda621',

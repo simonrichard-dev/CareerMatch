@@ -6,7 +6,7 @@ import Button from '../Button';
 
 
 type Props = TextProps & {
-  title: string;
+  title: string | JSX.Element;
   onPress: () => void;
 };
 const HeaderButton = ({ title, onPress }: Props) => {

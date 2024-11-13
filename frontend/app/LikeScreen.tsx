@@ -16,6 +16,7 @@ import ThemedText from '@/components/ThemedText';
 import MatchLine from '@/components/MatchLine';
 import { ResizeMode, Video } from 'expo-av';
 import Button from '@/components/Button';
+import Loading from '@/components/Loading';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -29,6 +30,7 @@ export default function LikeScreen() {
   const { token, state, user, permUserProfile } = useAuthToken();
   const videoRef = useRef<Video>(null);
 
+  const [loading, setLoading] = useState(true);
   const [tabSelected, setTabSelected] = useState<1 | 2>(1);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -42,36 +44,43 @@ export default function LikeScreen() {
     if (state == "loaded") {
       if (token == null) {
         navigation.navigate('LoginScreen');
+        return;
       }
-
       permUserProfile();
+      fetchUserMatches();
     }
   }, [state, token]);
 
-  useEffect(() => {
-    if (!token) return;
-
-    const loadUserMatches = async () => {
-      const response = await axiosGet('/api/users/me/matches', token);
-      if (response.error) {
-        if (response.status == 401) {
-          // Non connecté
-          navigation.navigate('LoginScreen');
-          return;
-        }
-        toastError("Erreur lors du chargement des données");
+  const fetchUserMatches = async () => {
+    setLoading(true);
+    const response = await axiosGet('/api/users/me/matches', token);
+    if (response.error) {
+      if (response.status == 401) {
+        // Non connecté
+        navigation.navigate('LoginScreen');
         return;
       }
+      toastError("Erreur lors du chargement des données");
+      return;
+    }
 
-      if (response.data) {
-        setMatches(response.data['matches']);
-        setMatchesReceived(response.data['matches_received']);
-      }
-    };
+    if (response.data) {
+      setMatches(response.data['matches']);
+      setMatchesReceived(response.data['matches_received']);
+      setLoading(false);
+    }
+  };
 
-    loadUserMatches();
-  }, [token]);
-
+  const fetchProposal = async (proposalId: number) => {
+    const response = await axiosGet(`/api/proposals/${proposalId}/`, token);
+    if (response.error) {
+      toastError(response.error);
+      return;
+    }
+    if (response.data) {
+      setProposalDisplayed(response.data);
+    }
+  };
 
   function onRemoveMatch(proposalId: number) {
     const removeMatch = async () => {
@@ -84,6 +93,7 @@ export default function LikeScreen() {
         return;
       }
       if (response.data) {
+        toastSuccess("Match supprimé avec succès");
         setMatches(matches.filter((match) => match.proposal.id != proposalId));
       }
     };
@@ -100,31 +110,29 @@ export default function LikeScreen() {
         toastError("Erreur lors de l'interaction du match");
         return;
       }
+      if (response.data) {
+        if (status == 2) {
+          toastSuccess("Match accepté avec succès");
+        }
+        else {
+          toastSuccess("Match refusé avec succès");
+        }
+      }
     };
     interactMatch();
   }
 
-  const loadProposal = async (proposalId: number) => {
-    const response = await axiosGet(`/api/proposals/${proposalId}/`, token);
-    if (response.error) {
-      toastError(response.error);
-      return;
-    }
-    if (response.data) {
-      setProposalDisplayed(response.data);
-    }
-  };
   const openProposal = (match: MatchData) => {
     if (match.proposal.type == 1 && user?.profile?.user_goal_type == 2) {
       // Load CV of the user matched
-      loadProposal(match.user.profile?.proposal.id as any).then(() => {
+      fetchProposal(match.user.profile?.proposal.id as any).then(() => {
         setModalVisible(true);
         StatusBar.setHidden(true);
       });
     }
     else {
       // Load Announcement proposal
-      loadProposal(match.proposal.id).then(() => {
+      fetchProposal(match.proposal.id).then(() => {
         setModalVisible(true);
         StatusBar.setHidden(true);
       });
@@ -179,7 +187,7 @@ export default function LikeScreen() {
                   resizeMode={ResizeMode.CONTAIN}
                   shouldPlay
                   onPlaybackStatusUpdate={(status) => {
-                    if (status.didJustFinish) {
+                    if (status.isLoaded && status.didJustFinish) {
                       videoRef.current?.stopAsync();
                     }
                   }}
@@ -208,65 +216,72 @@ export default function LikeScreen() {
       </Modal>
 
       <Card>
-        <View style={[styles.tabsHeader,]}>
-          <TouchableOpacity
-            style={[styles.tabsHeaderElement,]}
-            onPress={() => setTabSelected(1)}
-          >
-            <ThemedText styles={{
-              textAlign: 'center',
-            }}>Match envoyé</ThemedText>
-          </TouchableOpacity>
+        {loading ? <Loading /> : (
+          <>
+            <View style={[styles.tabsHeader,]}>
+              <TouchableOpacity
+                style={[styles.tabsHeaderElement,]}
+                onPress={() => setTabSelected(1)}
+              >
+                <ThemedText styles={{textAlign: 'center'}} variant={tabSelected == 1 ? 'tab_selected' : 'tab'}>
+                  Match envoyé
+                </ThemedText>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.tabsHeaderElement,]}
-            onPress={() => setTabSelected(2)}
-          >
-            <ThemedText styles={{
-              textAlign: 'center',
-            }}>Match reçu</ThemedText>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.tabsHeaderElement,]}
+                onPress={() => setTabSelected(2)}
+              >
+                <ThemedText styles={{
+                  textAlign: 'center',
+                  borderLeftWidth: 0,
+                }} variant={tabSelected == 2 ? 'tab_selected' : 'tab'} color='title1'>
+                  Match reçu
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
 
-        <View style={[styles.tabsContainer,]}>
-          {tabSelected == 1 && (
-            <>
-              {matches.length > 0 ? (
-                matches.map((match) => (
-                  <MatchLine
-                    match={match}
-                    method="default"
-                    onRemoveMatch={onRemoveMatch}
-                    onInteractMatch={onInteractMatch}
-                    onOpen={openProposal}
-                    key={match.id}
-                  />
-                ))
-              ) : (
-                <ThemedText styles={{ backgroundColor: "#d5d5d5", }}>Aucun match envoyé</ThemedText>
+            <View style={[styles.tabsContainer,]}>
+              {tabSelected == 1 && (
+                <>
+                  {matches.length > 0 ? (
+                    matches.map((match) => (
+                      <MatchLine
+                        match={match}
+                        method="default"
+                        onRemoveMatch={onRemoveMatch}
+                        onInteractMatch={onInteractMatch}
+                        onOpen={openProposal}
+                        key={match.id}
+                      />
+                    ))
+                  ) : (
+                    <ThemedText styles={{backgroundColor: "#d5d5d5", width: "85%", margin: "auto"}}>Aucun match envoyé</ThemedText>
+                  )}
+                </>
               )}
-            </>
-          )}
 
-          {tabSelected == 2 && (
-            <>
-              {matchesReceived.length > 0 ? (
-                matchesReceived.map((match) => (
-                  <MatchLine
-                    match={match}
-                    method="received"
-                    onRemoveMatch={onRemoveMatch}
-                    onInteractMatch={onInteractMatch}
-                    onOpen={openProposal}
-                    key={match.id}
-                  />
-                ))
-              ) : (
-                <ThemedText styles={{ backgroundColor: "#d5d5d5", }}>Aucun match reçu</ThemedText>
+              {tabSelected == 2 && (
+                <>
+                  {matchesReceived.length > 0 ? (
+                    matchesReceived.map((match) => (
+                      <MatchLine
+                        match={match}
+                        method="received"
+                        onRemoveMatch={onRemoveMatch}
+                        onInteractMatch={onInteractMatch}
+                        onOpen={openProposal}
+                        key={match.id}
+                      />
+                    ))
+                  ) : (
+                    <ThemedText styles={{backgroundColor: "#d5d5d5", width: "85%", margin: "auto"}}>Aucun match reçu</ThemedText>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </View>
+            </View>
+          </>
+        )}
       </Card>
 
       {/* Footer */}

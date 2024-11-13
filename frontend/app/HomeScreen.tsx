@@ -15,6 +15,7 @@ import Header from '@/components/Container/Header';
 import Section from '@/components/Container/Section';
 import { toastError } from '@/services/toast';
 import Navbar from '@/components/Container/Navbar';
+import Loading from '@/components/Loading';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -26,6 +27,7 @@ export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { token, state, permUserProfile } = useAuthToken();
 
+  const [loading, setLoading] = useState(true);
   const [inMatch, setInMatch] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -52,12 +54,14 @@ export default function HomeScreen() {
       }
       permUserProfile();
   
-      loadProposals();
+      fetchMatching();
     }
   }, [state, token]);
 
-  async function loadProposals() {
+  async function fetchMatching() {
     if (!token) return;
+
+    setLoading(true);
     console.log('Chargement de nouveaux proposals...');
 
     const response = await axiosGet('/api/matching/', token);
@@ -89,9 +93,8 @@ export default function HomeScreen() {
       else {
         setProposalDisplayed(null);
       }
-    } else {
-      console.log('Aucune donnée trouvée');
     }
+    setLoading(false);
   }
 
   async function postProposal(state: number) {
@@ -105,7 +108,7 @@ export default function HomeScreen() {
   function nextProposal() {
     if (index == proposals.length - 1) {
       setProposalDisplayed(null);
-      loadProposals();
+      fetchMatching();
       return;
     }
 
@@ -134,7 +137,6 @@ export default function HomeScreen() {
     })
   }
 
-
   return (
     <Section>
       {/* Header */}
@@ -144,37 +146,81 @@ export default function HomeScreen() {
 
       {/* Body */}
       <Card>
-        {proposalDisplayed ? (
+        {loading ? <Loading /> : (
           <>
-          {Platform.OS === 'android' || Platform.OS === 'ios' ? (
+            {proposalDisplayed ? (
             <>
-            <TouchableOpacity onPress={openModal}>
-              <Image
-                // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
-                // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
-                style={styles.largeImage}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+            {Platform.OS === 'android' || Platform.OS === 'ios' ? (
+              <>
+              <TouchableOpacity onPress={openModal}>
+                <Image
+                  // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
+                  // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                  source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
+                  style={styles.largeImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
 
-            <Modal
-              visible={modalVisible}
-              transparent={true}
-              animationType="fade"
-              onRequestClose={closeModal}
-            >
-              <View style={styles.modalContainer}>
-                <ScrollView
-                  horizontal
-                  pagingEnabled
-                  style={styles.carouselContainer}
-                  showsHorizontalScrollIndicator={false}
-                >
+              <Modal
+                visible={modalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={closeModal}
+              >
+                <View style={styles.modalContainer}>
+                  <ScrollView
+                    horizontal
+                    pagingEnabled
+                    style={styles.carouselContainer}
+                    showsHorizontalScrollIndicator={false}
+                  >
 
-                  {/* Image en plein écran */}
-                  <View style={styles.carouselItem}>
-                    <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+                    {/* Image en plein écran */}
+                    <View style={styles.carouselItem}>
+                      <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+                        {proposalDisplayed.proposal_imgs_files.map((img, index) => (
+                          <Image
+                            // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                            source={{ uri: `${API_HOST}${img}` }}
+                            style={styles.largeImage}
+                            resizeMode="contain"
+                            key={index}
+                          />
+                        ))}
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Vidéo en plein écran */}
+                    {proposalDisplayed.video_file && (
+                      <View style={styles.carouselItem}>
+                        <Video
+                          ref={videoRef}
+                          // {API_HOST}/media/videos/SR_Vidéo.mp4
+                          // {API_HOST}{proposals[0].video_file}
+                          source={{ uri: `${API_HOST}${proposalDisplayed.video_file}` }}
+                          style={styles.fullScreenVideo}
+                          resizeMode={ResizeMode.CONTAIN}
+                          shouldPlay
+                          onPlaybackStatusUpdate={(status) => {
+                            if (status.isLoaded && status.didJustFinish) {
+                              videoRef.current?.stopAsync();
+                            }
+                          }}
+                          useNativeControls
+                        />
+                      </View>
+                    )}
+                  </ScrollView>
+                </View>
+              </Modal>
+              </>
+            ) : (
+              <View style={styles.proposalPCView}>
+            
+                <View style={styles.proposalPCPart}>
+                  <ScrollView>
+                    <View style={{ width: "100%" }}>
                       {proposalDisplayed.proposal_imgs_files.map((img, index) => (
                         <Image
                           // {API_HOST}{proposals[0].proposal_imgs_files[0]}
@@ -184,84 +230,44 @@ export default function HomeScreen() {
                           key={index}
                         />
                       ))}
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* Vidéo en plein écran */}
-                  {proposalDisplayed.video_file && (
-                    <View style={styles.carouselItem}>
-                      <Video
-                        ref={videoRef}
-                        // {API_HOST}/media/videos/SR_Vidéo.mp4
-                        // {API_HOST}{proposals[0].video_file}
-                        source={{ uri: `${API_HOST}${proposalDisplayed.video_file}` }}
-                        style={styles.fullScreenVideo}
-                        resizeMode={ResizeMode.CONTAIN}
-                        shouldPlay
-                        onPlaybackStatusUpdate={(status) => {
-                          if (status.didJustFinish) {
-                            videoRef.current?.stopAsync();
-                          }
-                        }}
-                        useNativeControls
-                      />
                     </View>
-                  )}
-                </ScrollView>
+                  </ScrollView>
+                </View>
+
+                {proposalDisplayed.video_file && (
+                  <View style={styles.proposalPCPart}>
+                    <Video
+                      ref={videoRef}
+                      // {API_HOST}/media/videos/SR_Vidéo.mp4
+                      // {API_HOST}{proposals[0].video_file}
+                      source={{ uri: `${API_HOST}${proposalDisplayed.video_file}` }}
+                      style={styles.fullScreenVideo}
+                      resizeMode={ResizeMode.CONTAIN}
+                      shouldPlay
+                      onPlaybackStatusUpdate={(status) => {
+                        if (status.isLoaded && status.didJustFinish) {
+                          videoRef.current?.stopAsync();
+                        }
+                      }}
+                      onReadyForDisplay={(videoDetails) => {
+                        // @ts-ignore: wrong typing
+                        const src = videoDetails.srcElement;
+                        src.style.width = "100%";
+                        src.style.height = "100%";
+                      }}
+                      useNativeControls
+                    />
+                  </View>
+                )}
               </View>
-            </Modal>
+            )}
             </>
           ) : (
-            <View style={styles.proposalPCView}>
-          
-              <View style={styles.proposalPCPart}>
-                <ScrollView>
-                  <View style={{ width: "100%" }}>
-                    {proposalDisplayed.proposal_imgs_files.map((img, index) => (
-                      <Image
-                        // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                        source={{ uri: `${API_HOST}${img}` }}
-                        style={styles.largeImage}
-                        resizeMode="contain"
-                        key={index}
-                      />
-                    ))}
-                  </View>
-                </ScrollView>
-              </View>
-
-              {proposalDisplayed.video_file && (
-                <View style={styles.proposalPCPart}>
-                  <Video
-                    ref={videoRef}
-                    // {API_HOST}/media/videos/SR_Vidéo.mp4
-                    // {API_HOST}{proposals[0].video_file}
-                    source={{ uri: `${API_HOST}${proposalDisplayed.video_file}` }}
-                    style={styles.fullScreenVideo}
-                    resizeMode={ResizeMode.CONTAIN}
-                    shouldPlay
-                    onPlaybackStatusUpdate={(status) => {
-                      if (status.didJustFinish) {
-                        videoRef.current?.stopAsync();
-                      }
-                    }}
-                    onReadyForDisplay={(videoDetails) => {
-                      // @ts-ignore: wrong typing
-                      const src = videoDetails.srcElement;
-                      src.style.width = "100%";
-                      src.style.height = "100%";
-                    }}
-                    useNativeControls
-                  />
-                </View>
-              )}
+            <View style={styles.carouselItem}>
+              <ThemedText>Aucun matching pour le moment...</ThemedText>
             </View>
           )}
           </>
-        ) : (
-          <View style={styles.carouselItem}>
-            <ThemedText>No matching yet...</ThemedText>
-          </View>
         )}
       </Card>
 
