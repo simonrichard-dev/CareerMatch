@@ -1,14 +1,13 @@
 // frontend/app/screens/ProfilScreen.tsx
-
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, TextInput, View } from "react-native";
-import Card from '@/components/Card';
-import ThemedText from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import Button from '@/components/Button';
+import { StyleSheet, View } from "react-native";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+import Card, { CardFooter } from '@/components/Card';
+import { Colors } from '@/constants/Colors';
+import Button from '@/components/Button';
 import { axiosPost, axiosGet } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 import Header from '@/components/Container/Header';
@@ -16,16 +15,21 @@ import HeaderButton from '@/components/Container/HeaderButton';
 import Title from '@/components/Title';
 import Section from '@/components/Container/Section';
 import { Text } from '@/components/Fields';
+import { toastError, toastSuccess } from '@/services/toast';
+import Navbar from '@/components/Container/NavBar';
+
 
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
   HomeScreen: any;
-  ChoiceScreen: any;
+  CreateProposalScreen: any;
 }>;
 
 export default function PersonalInfoScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { token, state } = useAuthToken();
+  const { token, state, permUser } = useAuthToken();
+
+  const [inUpdate, setInUpdate] = useState(false);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -33,31 +37,43 @@ export default function PersonalInfoScreen() {
   const [postalCode, setPostalCode] = useState('');
   const [userGoal, setUserGoal] = useState<1 | 2>(1);
 
+  // Permissions
   useEffect(() => {
     if (state == "loaded") {
       if (token == null) {
         navigation.navigate('LoginScreen');
       }
+
+      permUser();
     }
   }, [state, token]);
 
-  // Fonction pour charger les informations de l'utilisateur
   useEffect(() => {
     if (!token) return;
+
     const loadUserData = async () => {
-      try {
-        const response = await axiosGet('/api/users/me', token);
-        if (response && response.data && response.data.profile) {
-          setFirstName(response.data.profile.first_name || '');
-          setLastName(response.data.profile.last_name || '');
-          setAddress(response.data.profile.address || '');
-          setPostalCode(response.data.profile.zip_code || '');
-          setUserGoal(response.data.profile.user_goal_type || 1);
+      const response = await axiosGet('/api/users/me', token);
+      if (response.error) {
+        if (response.status == 401) {
+          // Non connecté
+          navigation.navigate('LoginScreen');
+          return;
         }
-      } catch (error) {
-        console.error("Erreur lors du chargement des données utilisateur:", error);
+        toastError("Erreur lors du chargement des données utilisateur:");
+        return;
+      }
+
+      if (response.data && response.data.profile) {
+        setInUpdate(true);
+
+        setFirstName(response.data.profile.first_name || '');
+        setLastName(response.data.profile.last_name || '');
+        setAddress(response.data.profile.address || '');
+        setPostalCode(response.data.profile.zip_code || '');
+        setUserGoal(response.data.profile.user_goal_type || 1);
       }
     };
+
     loadUserData();
   }, [token]);
 
@@ -70,7 +86,31 @@ export default function PersonalInfoScreen() {
       'user_goal_type': userGoal,
     }, token).then((response) => {
       if (response) {
-        navigation.navigate('ChoiceScreen');
+        if (response.error) {
+          if (response.status == 401) {
+            navigation.navigate('LoginScreen');
+            return;
+          }
+          if (response.status == 400 && response.data) {
+            for (const key in response.data) {
+              toastError(`[${key}] ${response.data[key]}`);
+            }
+            return;
+          }
+          toastError(response.error);
+          return;
+        }
+
+        if (response.data) {
+          toastSuccess("Profil mis à jour avec succès !");
+
+          if (inUpdate) {
+            navigation.navigate('HomeScreen');
+          }
+          else {
+            navigation.navigate('CreateProposalScreen');
+          }
+        }
       }
     });
   }
@@ -79,15 +119,11 @@ export default function PersonalInfoScreen() {
     <Section>
 
       {/* Header */}
-      <Header
-        btns={(
-          <>
-            <HeaderButton title='Home' onPress={() => {
-              navigation.navigate('HomeScreen');
-            }} />
-          </>
+      <Header>
+        {inUpdate && (
+          <Navbar page='profil' />
         )}
-      />
+      </Header>
 
       {/* Body */}
       <Card style={[styles.card]}>
@@ -119,39 +155,32 @@ export default function PersonalInfoScreen() {
         />
 
         <Title title='Quelle recherche ?' />
-        <View style={styles.choiceContainer}>
-          <TouchableOpacity
-            style={[
-              styles.choiceButton,
-              userGoal === 1 && styles.choiceButtonSelected
-            ]}
+        <View style={[ styles.goalButtons ]}>
+          <Button
+            title="Partager une opportunité"
             onPress={() => setUserGoal(1)}
-          >
-            <ThemedText variant="button" color="button">Partager une opportunité</ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.choiceButton,
-              userGoal === 2 && styles.choiceButtonSelected
-            ]}
+            variant={userGoal === 1 ? "button_selected" : "button"}
+            color={userGoal === 1 ? "button_selected" : "button"}
+          />
+          <Button
+            title="Partager mon CV"
             onPress={() => setUserGoal(2)}
-          >
-            <ThemedText variant="button" color="button">Partager mon CV</ThemedText>
-          </TouchableOpacity>
+            variant={userGoal === 2 ? "button_selected" : "button"}
+            color={userGoal === 2 ? "button_selected" : "button"}
+          />
         </View>
 
       </Card>
 
       {/* Footer */}
-      <Card>
+      <CardFooter>
         <Button
           title="CONTINUER"
           onPress={() => handleRegisterProfile()}
           variant="button"
-          color="button_bg"
+          color="button"
         />
-      </Card>
+      </CardFooter>
   
     </Section>
   );
@@ -175,28 +204,7 @@ const styles = StyleSheet.create({
     marginBottom: hp('1%'),
     color: '#FFFFFF',
   },
-  fileButtons: {
+  goalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: hp('2%'),
-  },
-
-  choiceContainer: {
-    marginTop: hp('2%'),
-    flex: 1,
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: wp('85%'),
-  },
-  choiceButton: {
-    padding: hp('2%'),
-    backgroundColor: "#E5B65E",
-    marginVertical: hp('1%'),
-    alignItems: 'center',
-    borderRadius: 8,
-    width: wp('50%'),
-  },
-  choiceButtonSelected: {
-    backgroundColor: "#4CAF50",
   },
 });

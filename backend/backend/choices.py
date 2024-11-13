@@ -22,6 +22,12 @@ class UserMatchState(models.IntegerChoices):
     DISMATCHED = 2, 'Dismatched'
 
 
+class UserMatchStatus(models.IntegerChoices):
+    PENDING = 1, 'Pending'
+    ACCEPTED = 2, 'Accepted'
+    REJECTED = 3, 'Rejected'
+
+
 class UserNotificationState(models.IntegerChoices):
     READ = 1, 'Read'
     UNREAD = 2, 'Unread'

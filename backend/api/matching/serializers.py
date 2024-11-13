@@ -9,7 +9,7 @@ from backend.choices import UserMatchState
 class UserMatchSerializerBase(serializers.ModelSerializer):
     class Meta:
         model = UserMatch
-        fields = ('id', 'state',)
+        fields = ('id', 'state', 'status')
 
 
 class UserMatchSerializer(UserMatchSerializerBase):
@@ -18,7 +18,7 @@ class UserMatchSerializer(UserMatchSerializerBase):
 
     class Meta(UserMatchSerializerBase.Meta):
         model = UserMatch
-        fields = ('id', 'state', 'user', 'proposal',)
+        fields = ('id', 'state', 'status', 'user', 'proposal',)
 
 
 class PostUserMatchingSerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class UpdateUserMatchingSerializer(serializers.ModelSerializer):
             'proposal',
         )
         extra_kwargs = {
-            'state': {'required': False},
-            'proposal': {'required': False},
+            'state': {'required': True},
+            'proposal': {'required': True},
         }
 

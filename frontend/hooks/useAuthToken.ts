@@ -1,14 +1,25 @@
 // frontend/hooks/useAuthToken.ts
-
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from 'expo-router';
+import { StackNavigationProp } from '@react-navigation/stack';
+
 import { axiosGet } from '@/services/axios-fetch';
+import { toastError } from '@/services/toast';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 
+type NavigationProp = StackNavigationProp<{
+  LoginScreen: any;
+  ProfilScreen: any;
+}>;
+
 export default function useAuthToken() {
+  const navigation = useNavigation<NavigationProp>();
+
   const [state, setState] = useState<'loading' | 'loaded'>('loading');
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
 
   // Fonction pour stocker le token
   const saveToken = async (newToken: string) => {
@@ -22,29 +33,49 @@ export default function useAuthToken() {
 
   // Fonction pour récupérer le token
   const loadToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
-      if (storedToken) {
-        const response = await axiosGet('/api/users/me', storedToken);
-        if (response && response.data) {
-          setToken(storedToken);
-        }
-        else {
-          setToken(null); // Token invalid
-        }
+    const storedToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+    if (storedToken) {
+      const response = await fetchUser(storedToken);
+      if (response && response.data) {
+        setUser(response.data);
+        setToken(storedToken);
       }
-    } catch (error) {
-      console.error("Erreur lors de la récupération du token :", error);
+      else {
+        setUser(null);
+        setToken(null); // Token invalid
+      }
     }
   };
 
   // Fonction pour supprimer le token
   const deleteToken = async () => {
-    try {
-      await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
-      setToken(null);
-    } catch (error) {
-      console.error("Erreur lors de la suppression du token :", error);
+    await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
+    setToken(null);
+  };
+
+  const fetchUser = async (token: string) => {
+    const response = await axiosGet('/api/users/me', token);
+    if (response.status == 401) {
+      // Non connecté
+      toastError("Session expirée, veuillez vous reconnecter.");
+      deleteToken();
+      navigation.navigate('LoginScreen');
+      return;
+    }
+    return response;
+  };
+
+  const permUser = () => {
+    if (!user) {
+      toastError("Vous devez être connecté pour accéder à cette page.");
+      navigation.navigate('LoginScreen');
+    }
+  };
+
+  const permUserProfile = () => {
+    if (!user || !user.profile) {
+      toastError("Vous devez compléter votre profil pour accéder à cette page.");
+      navigation.navigate('ProfilScreen');
     }
   };
 
@@ -58,7 +89,10 @@ export default function useAuthToken() {
   return {
     state,
     token,
+    user,
     saveToken,
     deleteToken,
+    permUser,
+    permUserProfile,
   };
 }

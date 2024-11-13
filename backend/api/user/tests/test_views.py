@@ -5,6 +5,7 @@ from api.user.tests.factories import UserMatchFactory
 from api.proposal.tests.factories import ProposalFactory
 
 from backend.choices import UserMatchState
+from backend.choices import UserMatchStatus
 from backend.choices import UserNotificationState
 
 
@@ -202,3 +203,56 @@ class TestMeUserNotificationsViewSet(TestCase):
         self.assertEqual(len(resp.data), 2)
         self.assertEqual(resp.data[0]['state'], UserNotificationState.READ)
         self.assertEqual(resp.data[1]['state'], UserNotificationState.READ)
+
+
+class TestUserMatchesViewSet(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.proposal1 = ProposalFactory(
+            author=self.superuser,
+            is_published=True,
+        )
+        self.proposal2 = ProposalFactory(
+            author=self.superuser,
+            is_published=True,
+        )
+        self.match1 = UserMatchFactory(
+            user=self.user_withprofile,
+            proposal=self.proposal1,
+            state=UserMatchState.MATCHED,
+        )
+        self.match2 = UserMatchFactory(
+            user=self.user_withprofile,
+            proposal=self.proposal2,
+            state=UserMatchState.MATCHED,
+        )
+
+        self.proposal3 = ProposalFactory(
+            author=self.user_withprofile,
+            is_published=True,
+        )
+        self.match3 = UserMatchFactory(
+            user=self.superuser,
+            proposal=self.proposal3,
+            state=UserMatchState.MATCHED,
+        )
+    
+    def test_update(self):
+        data = {
+            'proposal': self.proposal3.id,
+            'status': UserMatchStatus.ACCEPTED,
+        }
+
+        # no login -> 401
+        resp = self.client.patch('/api/users/u_matches/', data)
+        self.assertEqual(resp.status_code, 401)
+
+        # not author -> 406
+        self.client.login(self.user_withprofile)
+        resp = self.client.patch('/api/users/u_matches/', data)
+        self.assertEqual(resp.status_code, 406)
+
+        # work -> 200
+        self.client.login(self.superuser)
+        resp = self.client.patch('/api/users/u_matches/', data)
+        self.assertEqual(resp.status_code, 200)

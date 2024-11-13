@@ -35,7 +35,7 @@ class UserSerializer(UserSerializerBase):
 class UserMatchSerializerBase(serializers.ModelSerializer):
     class Meta:
         model = UserMatch
-        fields = ['id', 'user_id', 'proposal_id', 'state']
+        fields = ['id', 'user_id', 'proposal_id', 'state', 'status']
 
 
 class UserMatchSerializer(UserMatchSerializerBase):
@@ -47,7 +47,7 @@ class UserMatchSerializer(UserMatchSerializerBase):
         return ProposalSerializerBase(obj.proposal).data
 
     class Meta(UserMatchSerializerBase.Meta):
-        fields = ['id', 'user', 'proposal', 'state']
+        fields = ['id', 'user', 'proposal', 'state', 'status']
 
 
 class UserNotificationSerializer(serializers.ModelSerializer):
@@ -61,3 +61,8 @@ class UserNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserNotification
         fields = ['id', 'created_at', 'user', 'proposal', 'state']
+
+
+class UpdateUserMatchSerializer(serializers.ModelSerializer):
+    proposal = serializers.IntegerField(required=True)
+    status = serializers.IntegerField(required=True)

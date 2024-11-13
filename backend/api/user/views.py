@@ -15,6 +15,7 @@ from .serializers import UserSerializer
 from .serializers import UserSerializerBase
 from .serializers import UserMatchSerializer
 from .serializers import UserNotificationSerializer
+from .serializers import UpdateUserMatchSerializer
 
 class UserViewSet(
     mixins.ListModelMixin,
@@ -115,3 +116,40 @@ class MeUserNotificationsViewSet(
             notification.state = UserNotificationState.READ
             notification.save()
         return Response(status=status.HTTP_201_CREATED)
+
+
+class UserMatchesViewSet(
+    viewsets.GenericViewSet
+):
+    permission_classes = [
+        # permissions.IsAuthenticated,
+        # HaveProfile
+    ]
+    serializer_class = UserMatchSerializer
+
+    def get_queryset(self):
+        return UserMatch.objects.filter(
+            proposal__author=self.request.user
+        )
+
+    def get_proposal(self, proposal_id: int) -> Proposal:
+        try:
+            return UserMatch.objects.get(pk=proposal_id)
+        except UserMatch.DoesNotExist:
+            return None
+
+    def update(self, request):
+        serializer = UpdateUserMatchSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        proposal = self.get_proposal(serializer.validated_data['proposal'])
+        if (proposal.author.id != request.user.id):
+            return Response({
+                'error': 'L\'utilisateur n\'est pas l\'auteur de cette proposition.',
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        proposal.status = serializer.validated_data['status']
+        return Response({
+            'message': "OK!"
+        }, status=status.HTTP_200_OK)

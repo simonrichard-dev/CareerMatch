@@ -1,23 +1,27 @@
 // frontend/components/Container/Header.tsx
 import React from 'react';
-import { StyleSheet, Image, type TextProps } from 'react-native';
+import { StyleSheet, Image, type TextProps, View } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import Row from '../Row';
 
 
 type Props = TextProps & {
-  btns?: JSX.Element
+  children?: JSX.Element;
 };
-const Header = ({ btns = <></> }: Props) => {
+const Header = ({ children }: Props) => {
   return (
     <Row style={[styles.header]}>
-      <Image
+      <View style={[styles.headerLeft]}>
+        <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
           style={styles.logo}
-      />
-      {btns}
+        />
+      </View>
+      <View style={[styles.headerRight]}>
+        {children}
+      </View>
     </Row>
   );
 };
@@ -29,6 +33,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+  headerLeft: {
+
+  },
+  headerRight: {
+    flexDirection: "row",
+    justifyContent: "flex-end"
+  },
+
   logo: {
     width: wp('30%'),
     height: hp('15%'),

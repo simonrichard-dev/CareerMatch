@@ -30,12 +30,22 @@ const Email = ({ variant = "field1", color = "field1_bg", value, setValue, ...re
   );
 };
 
-const Password = ({ variant = "field1", color = "field1_bg", value, setValue, ...rest }: Props) => {
+type PropsPassword = TextProps & Props & {
+  placeholder?: string
+};
+const Password = ({
+  variant = "field1",
+  color = "field1_bg",
+  placeholder = "Mot de passe",
+  value,
+  setValue,
+  ...rest
+}: PropsPassword) => {
   return (
     <View style={[styles.container, { backgroundColor: Colors[color] }]}>
       <TextInput
         style={[styles.input, Styles[variant], { color: Colors.field1 }]}
-        placeholder="Mot de passe"
+        placeholder={placeholder}
         placeholderTextColor={Colors.field1}
         value={value}
         onChangeText={setValue}

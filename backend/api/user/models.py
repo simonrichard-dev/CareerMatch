@@ -7,6 +7,7 @@ from django.dispatch import receiver
 
 from backend.choices import UserGoalType
 from backend.choices import UserMatchState
+from backend.choices import UserMatchStatus
 from backend.choices import UserNotificationState
 
 
@@ -138,6 +139,12 @@ class UserMatch(models.Model):
     state = models.IntegerField(
         choices=UserMatchState.choices,
         verbose_name='State',
+        null=False,
+    )
+    status = models.IntegerField(
+        choices=UserMatchStatus.choices,
+        default=UserMatchStatus.PENDING,
+        verbose_name='Status',
         null=False,
     )
 

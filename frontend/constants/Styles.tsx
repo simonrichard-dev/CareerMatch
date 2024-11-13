@@ -33,4 +33,11 @@ export const Styles = {
     lineHeight: 22,
     fontWeight: "bold" as "bold",
   },
+  button_selected: {
+    color: Colors.button_selected,
+    backgroundColor: Colors.button_bg_selected,
+    fontSize: 20,
+    lineHeight: 22,
+    fontWeight: "bold" as "bold",
+  },
 };

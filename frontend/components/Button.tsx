@@ -1,9 +1,10 @@
 // frontend/components/Button.tsx
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, type TextProps } from 'react-native';
+import { StyleSheet, TouchableOpacity, type TextProps } from 'react-native';
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import ThemedText from './ThemedText';
 
 
 type Props = TextProps & {
@@ -16,10 +17,16 @@ type Props = TextProps & {
 const Button = ({ title, onPress, variant = "button", color = "button_bg", ...rest }: Props) => {
   return (
     <TouchableOpacity 
-      style={[styles.button, Styles[variant], { backgroundColor: Colors[color] }]}
+      style={[styles.button]}
       onPress={onPress}
     >
-      <Text style={[styles.text, Styles[variant], { backgroundColor: Colors[color] }]}>{title}</Text>
+      <ThemedText
+        variant={variant}
+        color={color}
+        styles={[styles.text]}
+      >
+        {title}
+      </ThemedText>
     </TouchableOpacity>
   );
 };

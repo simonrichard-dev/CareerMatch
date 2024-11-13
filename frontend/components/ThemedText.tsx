@@ -3,7 +3,7 @@ import React from "react";
 import { Text, type TextProps, StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 
-const stylesTitles = StyleSheet.create({
+const stylesText = StyleSheet.create({
   title1: {
     fontSize: 28,
     lineHeight: 26,
@@ -20,6 +20,8 @@ const stylesTitles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 26,
     fontWeight: "300",
+    padding: 20,
+    borderRadius: 15,
     backgroundColor: Colors.field1_bg,
   },
   button: {
@@ -30,10 +32,33 @@ const stylesTitles = StyleSheet.create({
     padding: 17,
     borderRadius: 15
   },
+  button_selected: {
+    fontSize: 24,
+    lineHeight: 22,
+    fontWeight: "bold",
+    backgroundColor: Colors.button_bg_selected,
+    padding: 17,
+    borderRadius: 15
+  },
+  tag: {
+    fontSize: 15,
+    lineHeight: 15,
+    backgroundColor: Colors.field1,
+    padding: 8,
+    borderRadius: 15,
+    marginLeft: 2,
+    marginBottom: 2
+  },
+  text: {
+    fontSize: 15,
+    lineHeight: 15,
+    padding: 8,
+    borderRadius: 15,
+  },
 });
 
 type Props = TextProps & {
-  variant?: keyof typeof stylesTitles,
+  variant?: keyof typeof stylesText,
   color?: keyof typeof Colors,
   styles?: any
 };
@@ -41,7 +66,7 @@ type Props = TextProps & {
 const ThemedText = ({ variant = "field1", color = "title1", styles = {}, ...rest }: Props) => {
   return (
     <Text
-      style={[stylesTitles[variant], { color: Colors[color] }, styles]}
+      style={[stylesText[variant], { color: Colors[color] }, styles]}
       {...rest}
     />
   );

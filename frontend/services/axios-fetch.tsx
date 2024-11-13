@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { API_URL } from "@env"
 import Toast from 'react-native-toast-message';
+import { toastError } from './toast';
 
 export const API_HOST = 'http://localhost:8000/'; //'http://10.1.3.248:8000/' holberton paris, //'http://192.168.1.13:8000/' vanves, // 'http://172.20.112.1:8000' center parcs;
 
@@ -72,6 +72,8 @@ Axios.interceptors.response.use(function (response) {
         }
         if (err.response.data['detail']) err.message = err.response.data['detail'];
         else if (err.response.data['error']) err.message = err.response.data['error'];
+
+        if (err.message == "Invalid token") err.message = "Session expired";
     } else {
         err.message = 'Connection failure...';
     }
@@ -93,13 +95,29 @@ export async function axiosPost(url: string, data: any, token?: string | null, h
         else {
             resp = await Axios.post(url, data, headers);
         }
-        return resp;
+        return handleAxiosSuccess(resp);
     } catch (error) {
-        Toast.show({
-            type: 'error',
-            text1: (error as any).message,
-        });
-        return undefined;
+        return handleAxiosError(error);
+    }
+}
+
+export async function axiosPut(url: string, data: any, token?: string | null, headers: any = {}) {
+    try {
+        let resp: AxiosResponse<any, any>;
+        if (token) {
+            resp = await Axios.put(url, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    ...headers
+                }
+            });
+        }
+        else {
+            resp = await Axios.put(url, data, headers);
+        }
+        return handleAxiosSuccess(resp);
+    } catch (error) {
+        return handleAxiosError(error);
     }
 }
 
@@ -116,12 +134,32 @@ export async function axiosGet(url: string, token?: string | null) {
         else {
             resp = await Axios.get(url);
         }
-        return resp;
+        return handleAxiosSuccess(resp);
     } catch (error) {
-        Toast.show({
-            type: 'error',
-            text1: (error as any).message,
-        });
-        return undefined;
+        return handleAxiosError(error);
     }
+}
+
+function handleAxiosSuccess(resp: AxiosResponse<any, any>) {
+    return {
+        status: resp.status,
+        data: resp.data,
+        error: null
+    };
+}
+
+function handleAxiosError(error: any) {
+    let status = 0;
+    let msg_error = "";
+    let data = null;
+    if (error instanceof AxiosError) {
+        msg_error = error.message
+        status = error.response?.status || 0
+        data = error.response?.data || null
+    }
+    return {
+        status: status,
+        data: data,
+        error: msg_error
+    };
 }
