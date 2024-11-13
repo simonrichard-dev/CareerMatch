@@ -1,6 +1,5 @@
 // frontend/app/LoginScreen.tsx
 import React, { useState } from 'react';
-import { StyleSheet } from "react-native";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -114,9 +113,3 @@ export default function LoginScreen() {
     </Section>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    
-  },
-});

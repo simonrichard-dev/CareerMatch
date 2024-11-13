@@ -3,6 +3,7 @@ import React from "react";
 import { Text, type TextProps, StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 
+
 const stylesText = StyleSheet.create({
   title1: {
     fontSize: 28,

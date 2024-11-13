@@ -24,7 +24,6 @@ type NavigationProp = StackNavigationProp<{
   HomeScreen: any;
   CreateProposalScreen: any;
 }>;
-
 export default function LikeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { token, state, user, permUserProfile } = useAuthToken();

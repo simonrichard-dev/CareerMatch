@@ -176,7 +176,6 @@ export default function HomeScreen() {
                     showsHorizontalScrollIndicator={false}
                   >
 
-                    {/* Image en plein écran */}
                     <View style={styles.carouselItem}>
                       <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
                         {proposalDisplayed.proposal_imgs_files.map((img, index) => (
@@ -191,7 +190,6 @@ export default function HomeScreen() {
                       </TouchableOpacity>
                     </View>
 
-                    {/* Vidéo en plein écran */}
                     {proposalDisplayed.video_file && (
                       <View style={styles.carouselItem}>
                         <Video

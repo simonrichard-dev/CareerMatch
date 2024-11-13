@@ -1,5 +1,5 @@
 // frontend/components/Card.tsx
-import { View, StyleSheet, type ViewProps, ImageBackground } from "react-native";
+import { View, StyleSheet, type ViewProps } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 

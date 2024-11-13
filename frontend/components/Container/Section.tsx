@@ -2,7 +2,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { SafeAreaViewProps } from 'react-native-safe-area-context';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 type Props = SafeAreaViewProps & {
   

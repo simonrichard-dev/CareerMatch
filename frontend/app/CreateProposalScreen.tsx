@@ -1,10 +1,10 @@
 // frontend/app/CreateProposalScreen.tsx
 import * as DocumentPicker from 'expo-document-picker';
 import React, { useState, useEffect, Fragment } from 'react';
-import { StyleSheet, TouchableOpacity, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import Card, { CardFooter } from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -18,6 +18,7 @@ import { toastError, toastSuccess } from '@/services/toast';
 import Title, { SubTitle } from '@/components/Title';
 import LineBreak from '@/components/LineBreak';
 import Navbar from '@/components/Container/Navbar';
+
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
@@ -220,7 +221,6 @@ export default function CreateProposalScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
   tagButtons: {
     flexDirection: 'row',
@@ -242,4 +242,3 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
-

@@ -14,7 +14,6 @@ type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
   CreateProposalScreen: any;
 }>;
-
 export default function useAuthToken() {
   const navigation = useNavigation<NavigationProp>();
 

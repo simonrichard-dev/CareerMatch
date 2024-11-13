@@ -1,13 +1,14 @@
 // frontend/components/MatchLine.tsx
 import { useState } from "react";
 import { type ViewProps, StyleSheet, TouchableOpacity, View, Text } from "react-native";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import ThemedText from "./ThemedText";
 import LineBreak from "./LineBreak";
+
 
 interface Props extends ViewProps {
   match: MatchData;

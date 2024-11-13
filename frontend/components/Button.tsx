@@ -1,9 +1,9 @@
 // frontend/components/Button.tsx
 import React from 'react';
 import { StyleSheet, TouchableOpacity, type TextProps } from 'react-native';
+
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ThemedText from './ThemedText';
 
 

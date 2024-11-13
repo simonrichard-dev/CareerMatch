@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import Card, { CardFooter } from '@/components/Card';
@@ -27,7 +26,6 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
-
 
   function handleRegister() {
     if (email == '' || password == '' || passwordConfirm == '') {
@@ -97,9 +95,3 @@ export default function RegisterScreen() {
     </Section>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    
-  },
-});

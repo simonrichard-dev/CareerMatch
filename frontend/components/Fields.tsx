@@ -1,9 +1,10 @@
 // frontend/components/Email.tsx
 import React from 'react';
 import { StyleSheet, TextInput, View, type TextProps } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 type Props = TextProps & {

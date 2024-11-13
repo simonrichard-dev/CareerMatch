@@ -1,7 +1,5 @@
 // frontend/components/Container/Header.tsx
 import React from 'react';
-import { StyleSheet, type TextProps } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Fontisto from '@expo/vector-icons/Fontisto';
@@ -52,8 +50,4 @@ const Navbar = ({ page }: Props) => {
         </>
     );
 };
-
-const styles = StyleSheet.create({
-
-});
 export default Navbar;

@@ -7,8 +7,8 @@ import ThemedText from "./ThemedText";
 import { Colors } from "@/constants/Colors";
 
 interface Props extends ViewProps {
-    title: string;
-} ;
+  title: string;
+};
 
 const Title = ({ title, style, ...rest }: Props) => {
   return (
