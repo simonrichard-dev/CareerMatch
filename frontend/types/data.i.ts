@@ -17,6 +17,7 @@ interface ProposalData {
   proposal_file: string;
   video_file?: string;
   proposal_imgs_files: string[];
+  type: number;
 }
 
 interface UserData {
@@ -28,6 +29,7 @@ interface UserData {
     address: string;
     zip_code: string;
     user_goal_type: number;
+    proposal: ProposalData;
   };
 }
 

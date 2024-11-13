@@ -237,22 +237,22 @@ class TestUserMatchesViewSet(TestCase):
             state=UserMatchState.MATCHED,
         )
     
-    def test_update(self):
+    def test_create(self):
         data = {
-            'proposal': self.proposal3.id,
+            'match': self.match3.id,
             'status': UserMatchStatus.ACCEPTED,
         }
 
         # no login -> 401
-        resp = self.client.patch('/api/users/u_matches/', data)
+        resp = self.client.post('/api/users/matches/', data)
         self.assertEqual(resp.status_code, 401)
 
         # not author -> 406
-        self.client.login(self.user_withprofile)
-        resp = self.client.patch('/api/users/u_matches/', data)
+        self.client.login(self.superuser)
+        resp = self.client.post('/api/users/matches/', data)
         self.assertEqual(resp.status_code, 406)
 
         # work -> 200
-        self.client.login(self.superuser)
-        resp = self.client.patch('/api/users/u_matches/', data)
+        self.client.login(self.user_withprofile)
+        resp = self.client.post('/api/users/matches/', data)
         self.assertEqual(resp.status_code, 200)

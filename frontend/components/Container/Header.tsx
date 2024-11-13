@@ -13,6 +13,9 @@ const Header = ({ children }: Props) => {
   return (
     <Row style={[styles.header]}>
       <View style={[styles.headerLeft]}>
+        
+      </View>
+      <View style={[styles.headerCenter]}>
         <Image
           source={require("@/assets/images/logo.png")}
           resizeMode='contain'
@@ -34,11 +37,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   headerLeft: {
+    flex: 1
+  },
+  headerCenter: {
 
   },
   headerRight: {
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    flex: 1
   },
 
   logo: {

@@ -33,13 +33,17 @@ const Button = ({ title, onPress, variant = "button", color = "button_bg", ...re
 
 const styles = StyleSheet.create({
   button: {
-    width: wp('40%'),
     maxWidth: 340,
-    height: 52,
+    height: 59,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
     margin: 8,
+    borderColor: "#fff",
+    borderWidth: 3,
+    shadowOffset: {width: 0, height: 5},
+    shadowColor: '#f19804',
+
   },
   text: {
     fontSize: 20,

@@ -1,23 +1,21 @@
 // frontend/app/screens/LikeScreen.tsx
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect, useRef } from 'react';
+import { Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import Card, { CardFooter } from '@/components/Card';
-import { Colors } from '@/constants/Colors';
-import Button from '@/components/Button';
-import { axiosPost, axiosGet, axiosPut } from '@/services/axios-fetch';
+import { axiosPost, axiosGet, axiosPut, API_HOST } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 import Header from '@/components/Container/Header';
-import Title from '@/components/Title';
 import Section from '@/components/Container/Section';
-import { Text } from '@/components/Fields';
 import { toastError, toastSuccess } from '@/services/toast';
-import Navbar from '@/components/Container/NavBar';
+import Navbar from '@/components/Container/Navbar';
 import ThemedText from '@/components/ThemedText';
 import MatchLine from '@/components/MatchLine';
+import { ResizeMode, Video } from 'expo-av';
+import Button from '@/components/Button';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -28,12 +26,16 @@ type NavigationProp = StackNavigationProp<{
 
 export default function LikeScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { token, state, permUserProfile } = useAuthToken();
+  const { token, state, user, permUserProfile } = useAuthToken();
+  const videoRef = useRef<Video>(null);
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [matches, setMatches] = useState<MatchData[]>([]);
   const [matchesReceived, setMatchesReceived] = useState<MatchData[]>([]);
+
+  const [proposalDisplayed, setProposalDisplayed] = useState<ProposalData | null>(null);
 
   // Permissions
   useEffect(() => {
@@ -88,10 +90,10 @@ export default function LikeScreen() {
     removeMatch();
   }
 
-  function onInteractMatch(proposalId: number, status: number) {
+  function onInteractMatch(matchId: number, status: number) {
     const interactMatch = async () => {
       const response = await axiosPost(`/api/users/matches/`, {
-        'proposal': proposalId,
+        'match': matchId,
         'status': status
       }, token);
       if (response.error) {
@@ -102,6 +104,37 @@ export default function LikeScreen() {
     interactMatch();
   }
 
+  const loadProposal = async (proposalId: number) => {
+    const response = await axiosGet(`/api/proposals/${proposalId}/`, token);
+    if (response.error) {
+      toastError(response.error);
+      return;
+    }
+    if (response.data) {
+      setProposalDisplayed(response.data);
+    }
+  };
+  const openProposal = (match: MatchData) => {
+    if (match.proposal.type == 1 && user?.profile?.user_goal_type == 2) {
+      // Load CV of the user matched
+      loadProposal(match.user.profile?.proposal.id as any).then(() => {
+        setModalVisible(true);
+        StatusBar.setHidden(true);
+      });
+    }
+    else {
+      // Load Announcement proposal
+      loadProposal(match.proposal.id).then(() => {
+        setModalVisible(true);
+        StatusBar.setHidden(true);
+      });
+    }
+  };
+  const closeProposal = () => {
+    setModalVisible(false);
+    StatusBar.setHidden(false);
+  };
+
   return (
     <Section>
 
@@ -111,6 +144,69 @@ export default function LikeScreen() {
       </Header>
 
       {/* Body */}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeProposal}
+      >
+        {proposalDisplayed && (
+          <>
+          <View style={styles.proposalPCView}>
+          
+            <View style={styles.proposalPCPart}>
+              <ScrollView>
+                <View style={{ width: "100%" }}>
+                  {proposalDisplayed.proposal_imgs_files.map((img, index) => (
+                    <Image
+                      // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                      source={{ uri: `${API_HOST}${img}` }}
+                      style={styles.largeImage}
+                      resizeMode="contain"
+                      key={index}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+
+            {proposalDisplayed.video_file && (
+              <View style={styles.proposalPCPart}>
+                <Video
+                  ref={videoRef}
+                  source={{ uri: `${proposalDisplayed.video_file}` }}
+                  style={styles.fullScreenVideo}
+                  resizeMode={ResizeMode.CONTAIN}
+                  shouldPlay
+                  onPlaybackStatusUpdate={(status) => {
+                    if (status.didJustFinish) {
+                      videoRef.current?.stopAsync();
+                    }
+                  }}
+                  onReadyForDisplay={(videoDetails) => {
+                    // @ts-ignore: wrong typing
+                    const src = videoDetails.srcElement;
+                    src.style.width = "100%";
+                    src.style.height = "100%";
+                  }}
+                  useNativeControls
+                />
+              </View>
+            )}
+
+            <View style={styles.modalCloseBtn}>
+              <Button
+                title="Fermer"
+                onPress={() => closeProposal()}
+                variant="button"
+                color="button"
+              />
+            </View>
+          </View>
+          </>
+        )}
+      </Modal>
+
       <Card>
         <View style={[styles.tabsHeader,]}>
           <TouchableOpacity
@@ -142,6 +238,7 @@ export default function LikeScreen() {
                     method="default"
                     onRemoveMatch={onRemoveMatch}
                     onInteractMatch={onInteractMatch}
+                    onOpen={openProposal}
                     key={match.id}
                   />
                 ))
@@ -160,6 +257,7 @@ export default function LikeScreen() {
                     method="received"
                     onRemoveMatch={onRemoveMatch}
                     onInteractMatch={onInteractMatch}
+                    onOpen={openProposal}
                     key={match.id}
                   />
                 ))
@@ -191,4 +289,32 @@ const styles = StyleSheet.create({
   tabsContainer: {
     width: "100%"
   },
+  proposalPCView: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+  },
+  proposalPCPart: {
+    flex: 1,
+    width: "50%",
+  },
+  largeImage: {
+    width: "100%",
+    height: hp('100%'),
+  },
+  video: {
+    width: wp('100%'),
+    height: hp('40%'),
+    marginTop: hp('2%'),
+  },
+  fullScreenVideo: {
+    width: '100%',
+    height: '100%',
+  },
+  modalCloseBtn: {
+    position: "absolute",
+    bottom: 0,
+    left: "50%",
+  }
 });

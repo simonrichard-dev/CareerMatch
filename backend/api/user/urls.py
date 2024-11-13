@@ -9,10 +9,10 @@ from .views import UserMatchesViewSet
 
 
 router = DefaultRouter(trailing_slash=True)
+router.register('matches', UserMatchesViewSet, basename='matches')
 router.register('me/proposals', MeUserProposalViewSet, basename='me_proposals')
 router.register('me/notifications', MeUserNotificationsViewSet, basename='me_notifications')
 router.register('me/matches', MeUserMatchesViewSet, basename='me_matches')
 router.register('me', MeUserViewSet, basename='me')
-router.register('u_matches', UserMatchesViewSet, basename='u_matches')
 router.register('', UserViewSet, basename='user')
 urlpatterns = router.urls

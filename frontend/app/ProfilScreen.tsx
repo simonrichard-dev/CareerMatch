@@ -11,12 +11,11 @@ import Button from '@/components/Button';
 import { axiosPost, axiosGet } from '@/services/axios-fetch';
 import useAuthToken from '@/hooks/useAuthToken';
 import Header from '@/components/Container/Header';
-import HeaderButton from '@/components/Container/HeaderButton';
 import Title from '@/components/Title';
 import Section from '@/components/Container/Section';
 import { Text } from '@/components/Fields';
 import { toastError, toastSuccess } from '@/services/toast';
-import Navbar from '@/components/Container/NavBar';
+import Navbar from '@/components/Container/Navbar';
 
 
 type NavigationProp = StackNavigationProp<{

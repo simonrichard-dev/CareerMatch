@@ -1,8 +1,8 @@
 // frontend/components/Container/HeaderButton.tsx
 import React from 'react';
-import { StyleSheet, TouchableOpacity, type TextProps } from 'react-native';
+import { StyleSheet, type TextProps } from 'react-native';
 
-import ThemedText from '../ThemedText';
+import Button from '../Button';
 
 
 type Props = TextProps & {
@@ -11,12 +11,7 @@ type Props = TextProps & {
 };
 const HeaderButton = ({ title, onPress }: Props) => {
     return (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={onPress}
-        >
-          <ThemedText variant="button" color="button">{title}</ThemedText>
-        </TouchableOpacity>
+      <Button title={title} onPress={onPress} variant="button" color="button" />
     );
 };
 

@@ -17,7 +17,7 @@ import Section from '@/components/Container/Section';
 import { toastError, toastSuccess } from '@/services/toast';
 import Title, { SubTitle } from '@/components/Title';
 import LineBreak from '@/components/LineBreak';
-import Navbar from '@/components/Container/NavBar';
+import Navbar from '@/components/Container/Navbar';
 
 type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;

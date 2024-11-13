@@ -1,5 +1,5 @@
 // frontend/components/Card.tsx
-import { View, StyleSheet, type ViewProps } from "react-native";
+import { View, StyleSheet, type ViewProps, ImageBackground } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 type Props = ViewProps;
@@ -25,7 +25,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: hp('5%'),
     backgroundColor: "#fff",
-    borderRadius: 10
+    borderRadius: 10,
+    borderColor: '#b3b3b3',
+    borderWidth: 3,
+    borderTopWidth: 5,
+    borderTopColor: '#eda621',
+    shadowColor: '#89878780',
+    shadowOffset: {width: -5, height: 9},
+    shadowRadius: 12,
   },
   cardFooter: {
     alignItems: 'center',

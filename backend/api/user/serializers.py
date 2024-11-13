@@ -5,8 +5,22 @@ from .models import UserProfile
 from .models import UserMatch
 from .models import UserNotification
 
+from api.proposal.models import Proposal
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    proposal = serializers.SerializerMethodField()
+    
+    def get_proposal(self, obj: UserProfile):
+        try:
+            from api.proposal.serializers import ProposalSerializer
+            proposal = Proposal.objects.filter(
+                author=obj.user
+            ).first()
+            return ProposalSerializer(proposal).data
+        except Exception:
+            return None
+
     class Meta:
         model = UserProfile
         fields = [
@@ -14,7 +28,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'address',
             'zip_code',
-            'user_goal_type'
+            'user_goal_type',
+            'proposal',
         ]
 
 
@@ -39,12 +54,12 @@ class UserMatchSerializerBase(serializers.ModelSerializer):
 
 
 class UserMatchSerializer(UserMatchSerializerBase):
-    user = UserSerializerBase(read_only=True)
+    user = UserSerializer(read_only=True)
     proposal = serializers.SerializerMethodField()
 
     def get_proposal(self, obj: UserMatch):
-        from api.proposal.serializers import ProposalSerializerBase
-        return ProposalSerializerBase(obj.proposal).data
+        from api.proposal.serializers import ProposalSerializer
+        return ProposalSerializer(obj.proposal).data
 
     class Meta(UserMatchSerializerBase.Meta):
         fields = ['id', 'user', 'proposal', 'state', 'status']
@@ -63,6 +78,6 @@ class UserNotificationSerializer(serializers.ModelSerializer):
         fields = ['id', 'created_at', 'user', 'proposal', 'state']
 
 
-class UpdateUserMatchSerializer(serializers.ModelSerializer):
-    proposal = serializers.IntegerField(required=True)
+class UpdateUserMatchSerializer(serializers.Serializer):
+    match = serializers.IntegerField(required=True)
     status = serializers.IntegerField(required=True)

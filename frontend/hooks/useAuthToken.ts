@@ -12,6 +12,7 @@ const ACCESS_TOKEN_KEY = 'access_token';
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
   ProfilScreen: any;
+  CreateProposalScreen: any;
 }>;
 
 export default function useAuthToken() {
@@ -21,7 +22,6 @@ export default function useAuthToken() {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserData | null>(null);
 
-  // Fonction pour stocker le token
   const saveToken = async (newToken: string) => {
     try {
       setToken(newToken);
@@ -31,7 +31,6 @@ export default function useAuthToken() {
     }
   };
 
-  // Fonction pour récupérer le token
   const loadToken = async () => {
     const storedToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
     if (storedToken) {
@@ -47,7 +46,6 @@ export default function useAuthToken() {
     }
   };
 
-  // Fonction pour supprimer le token
   const deleteToken = async () => {
     await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
     setToken(null);
@@ -76,10 +74,14 @@ export default function useAuthToken() {
     if (!user || !user.profile) {
       toastError("Vous devez compléter votre profil pour accéder à cette page.");
       navigation.navigate('ProfilScreen');
+      return;
+    }
+    if (!user.profile.proposal) {
+      toastError("Une proposition doit être créée pour accéder à cette page.");
+      navigation.navigate('CreateProposalScreen');
     }
   };
 
-  // Charger le token au montage du hook
   useEffect(() => {
     loadToken().then(() => {
       setState('loaded');

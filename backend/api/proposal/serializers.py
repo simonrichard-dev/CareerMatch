@@ -23,6 +23,7 @@ class ProposalSerializerBase(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'tags',
+            'type',
         )
 
 
@@ -53,6 +54,7 @@ class ProposalSerializer(ProposalSerializerBase):
             'proposal_file',
             'video_file',
             'proposal_imgs_files',
+            'type',
         )
 
 

@@ -97,8 +97,13 @@ class ProposalViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer: ProposalUpsertSerializer):
+        _type = 2
+        if self.request.user.profile.user_goal_type == 2:
+            _type = 1
+        print(_type)
         serializer.save(
             author=self.request.user,
+            type=_type,
             is_published=True,
         )
         process_pdf_to_pictures(

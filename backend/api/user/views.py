@@ -119,11 +119,12 @@ class MeUserNotificationsViewSet(
 
 
 class UserMatchesViewSet(
+    mixins.CreateModelMixin,
     viewsets.GenericViewSet
 ):
     permission_classes = [
-        # permissions.IsAuthenticated,
-        # HaveProfile
+        permissions.IsAuthenticated,
+        HaveProfile
     ]
     serializer_class = UserMatchSerializer
 
@@ -132,24 +133,26 @@ class UserMatchesViewSet(
             proposal__author=self.request.user
         )
 
-    def get_proposal(self, proposal_id: int) -> Proposal:
+    def get_match(self, match_id: int) -> UserMatch:
         try:
-            return UserMatch.objects.get(pk=proposal_id)
+            return UserMatch.objects.get(pk=match_id)
         except UserMatch.DoesNotExist:
             return None
 
-    def update(self, request):
+    def create(self, request):
         serializer = UpdateUserMatchSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        proposal = self.get_proposal(serializer.validated_data['proposal'])
-        if (proposal.author.id != request.user.id):
+        match = self.get_match(serializer.validated_data['match'])
+        if match.proposal.author.id != request.user.id:
             return Response({
                 'error': 'L\'utilisateur n\'est pas l\'auteur de cette proposition.',
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-        proposal.status = serializer.validated_data['status']
+        match.status = serializer.validated_data['status']
+        match.save()
+
         return Response({
             'message': "OK!"
         }, status=status.HTTP_200_OK)

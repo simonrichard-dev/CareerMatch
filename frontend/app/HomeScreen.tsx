@@ -5,8 +5,6 @@ import { Video, ResizeMode } from 'expo-av';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 import Card, { CardFooter } from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -14,10 +12,9 @@ import Button from '@/components/Button';
 import useAuthToken from '@/hooks/useAuthToken';
 import { API_HOST, axiosGet, axiosPost } from '@/services/axios-fetch';
 import Header from '@/components/Container/Header';
-import HeaderButton from '@/components/Container/HeaderButton';
 import Section from '@/components/Container/Section';
 import { toastError } from '@/services/toast';
-import Navbar from '@/components/Container/NavBar';
+import Navbar from '@/components/Container/Navbar';
 
 
 type NavigationProp = StackNavigationProp<{
@@ -178,13 +175,15 @@ export default function HomeScreen() {
                   {/* Image en plein écran */}
                   <View style={styles.carouselItem}>
                     <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                      <Image
-                        // {API_HOST}/media/proposals/imgs/CV_-_Simon_RICHARD_0.jpg
-                        // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                        source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
-                        style={styles.fullScreenImage}
-                        resizeMode="contain"
-                      />
+                      {proposalDisplayed.proposal_imgs_files.map((img, index) => (
+                        <Image
+                          // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                          source={{ uri: `${API_HOST}${img}` }}
+                          style={styles.largeImage}
+                          resizeMode="contain"
+                          key={index}
+                        />
+                      ))}
                     </TouchableOpacity>
                   </View>
 
@@ -218,18 +217,15 @@ export default function HomeScreen() {
               <View style={styles.proposalPCPart}>
                 <ScrollView>
                   <View style={{ width: "100%" }}>
-                    <Image
-                      // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                      source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
-                      style={styles.largeImage}
-                      resizeMode="contain"
-                    />
-                    <Image
-                      // {API_HOST}{proposals[0].proposal_imgs_files[0]}
-                      source={{ uri: `${API_HOST}${proposalDisplayed.proposal_imgs_files[0]}` }}
-                      style={styles.largeImage}
-                      resizeMode="contain"
-                    />
+                    {proposalDisplayed.proposal_imgs_files.map((img, index) => (
+                      <Image
+                        // {API_HOST}{proposals[0].proposal_imgs_files[0]}
+                        source={{ uri: `${API_HOST}${img}` }}
+                        style={styles.largeImage}
+                        resizeMode="contain"
+                        key={index}
+                      />
+                    ))}
                   </View>
                 </ScrollView>
               </View>
@@ -244,7 +240,6 @@ export default function HomeScreen() {
                     style={styles.fullScreenVideo}
                     resizeMode={ResizeMode.CONTAIN}
                     shouldPlay
-                    on
                     onPlaybackStatusUpdate={(status) => {
                       if (status.didJustFinish) {
                         videoRef.current?.stopAsync();

@@ -52,8 +52,7 @@ const SubTitle = ({ title, style, ...rest }: Props) => {
 const styles = StyleSheet.create({
   title: {
     padding: hp('1.5%'),
-    backgroundColor: "#FFFFFF",
-    width: wp('85%'),
+    width: "100%",
   },
 });
 

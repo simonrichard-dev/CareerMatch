@@ -25,7 +25,6 @@ const Navbar = ({ page }: Props) => {
 
     return (
         <>
-            {page}
             {page != 'home' && (
                 <HeaderButton
                     title={(<><Fontisto name="home" size={24} color="white" /> Home</>)}
@@ -36,7 +35,7 @@ const Navbar = ({ page }: Props) => {
             )}
             {page != 'profil' && (
                 <HeaderButton
-                    title={(<><FontAwesome name="user" size={24} color="white" /> {page}</>)}
+                    title={(<><FontAwesome name="user" size={24} color="white" /> Profil</>)}
                     onPress={() => {
                         navigation.navigate('ProfilScreen');
                     }}
@@ -44,7 +43,7 @@ const Navbar = ({ page }: Props) => {
             )}
             {page != 'like' && (
                 <HeaderButton
-                    title={(<><AntDesign name="like1" size={24} color="white" /> Like</>)}
+                    title={(<><AntDesign name="like1" size={24} color="white" /> Liked</>)}
                     onPress={() => {
                         navigation.navigate('LikeScreen');
                     }}
