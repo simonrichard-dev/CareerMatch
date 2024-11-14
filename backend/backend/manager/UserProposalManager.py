@@ -28,6 +28,7 @@ class UserManagerProposal:
 
         proposals = Proposal.objects.filter(
             is_published=True,
+            deleted_at=None,
             type=type_proposal
         ).exclude(id__in=user_matches_ids).exclude(author_id=self.user_id)
 

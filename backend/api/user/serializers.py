@@ -8,16 +8,27 @@ from .models import UserNotification
 from api.proposal.models import Proposal
 
 
+class UserProfileSerializerBase(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'first_name',
+            'last_name',
+            'address',
+            'zip_code',
+            'user_goal_type',
+        ]
+
 class UserProfileSerializer(serializers.ModelSerializer):
     proposal = serializers.SerializerMethodField()
     
     def get_proposal(self, obj: UserProfile):
         try:
-            from api.proposal.serializers import ProposalSerializer
+            from api.proposal.serializers import ProposalMatchingSerializer
             proposal = Proposal.objects.filter(
                 author=obj.user
             ).first()
-            return ProposalSerializer(proposal).data
+            return ProposalMatchingSerializer(proposal).data
         except Exception:
             return None
 
@@ -34,9 +45,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializerBase(serializers.ModelSerializer):
+    profile = UserProfileSerializerBase(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'email']
+        fields = ['id', 'email', 'profile']
 
 
 class UserSerializer(UserSerializerBase):

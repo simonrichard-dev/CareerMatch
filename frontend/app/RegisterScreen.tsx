@@ -85,7 +85,7 @@ export default function RegisterScreen() {
       {/* Footer */}
       <CardFooter>
         <Button
-          title="CONTINUER"
+          title="Continuer"
           onPress={() => handleRegister()}
           variant="button"
           color="button"

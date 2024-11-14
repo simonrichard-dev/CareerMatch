@@ -50,6 +50,7 @@ class MeUserProposalViewSet(
         permissions.IsAuthenticated,
         HaveProfile
     ]
+    pagination_class = None
 
     def get_queryset(self):
         return Proposal.objects.filter(

@@ -31,7 +31,7 @@ export default function CreateProposalScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { token, state, user, permUserProfile } = useAuthToken();
 
-  const [typeProposal, setTypeProposal] = useState<"CV" | "Offre">("CV");
+  const [typeProposal, setTypeProposal] = useState<"CV" | "Opportunité">("CV");
 
   const [tags, setTags] = useState<any[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -47,7 +47,7 @@ export default function CreateProposalScreen() {
       permUserProfile();
 
       if (user?.profile?.user_goal_type == 1) {
-        setTypeProposal("Offre");
+        setTypeProposal("Opportunité");
       }
     }
   }, [state, token]);
@@ -69,7 +69,7 @@ export default function CreateProposalScreen() {
 
   function handleChoices() {
     if (!cvFile) {
-      toastError(`Veuillez sélectionner un${typeProposal == "Offre" ? "e" : ""} ${typeProposal}.`);
+      toastError(`Veuillez sélectionner un${typeProposal == "Opportunité" ? "e" : ""} ${typeProposal}.`);
       return;
     }
 
@@ -155,7 +155,7 @@ export default function CreateProposalScreen() {
 
       {/* Body */}
       <Card>
-        <Title title={`Poster un${typeProposal == "Offre" ? "e" : ""} ${typeProposal}`} />
+        <Title title={`Poster un${typeProposal == "Opportunité" ? "e" : ""} ${typeProposal}`} />
 
         {/* Job Types */}
         <ScrollView style={[styles.scrollview]}>
@@ -211,7 +211,7 @@ export default function CreateProposalScreen() {
       {/* Footer */}
       <CardFooter>
         <Button
-          title="POSTER"
+          title="Poster"
           onPress={handleChoices}
           variant="button"
           color="button"

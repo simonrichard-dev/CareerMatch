@@ -1,6 +1,6 @@
 // frontend/app/screens/LikeScreen.tsx
-import React, { useState, useEffect, useRef } from 'react';
-import { Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Text, Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -17,16 +17,15 @@ import MatchLine from '@/components/MatchLine';
 import { ResizeMode, Video } from 'expo-av';
 import Button from '@/components/Button';
 import Loading from '@/components/Loading';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 type NavigationProp = StackNavigationProp<{
   LoginScreen: any;
-  HomeScreen: any;
-  CreateProposalScreen: any;
 }>;
 export default function LikeScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { token, state, user, permUserProfile } = useAuthToken();
+  const { token, state, permUserProfile } = useAuthToken();
   const videoRef = useRef<Video>(null);
 
   const [loading, setLoading] = useState(true);
@@ -38,8 +37,8 @@ export default function LikeScreen() {
 
   const [proposalDisplayed, setProposalDisplayed] = useState<ProposalData | null>(null);
 
-  // Permissions
-  useEffect(() => {
+  function processLikeScreen() {
+    setLoading(true);
     if (state == "loaded") {
       if (token == null) {
         navigation.navigate('LoginScreen');
@@ -48,9 +47,22 @@ export default function LikeScreen() {
       permUserProfile();
       fetchUserMatches();
     }
+  }
+
+  // Permissions
+  useEffect(() => {
+    processLikeScreen();
   }, [state, token]);
 
+  // Fix reload for navigation
+  useFocusEffect(
+    useCallback(() => {
+      processLikeScreen();
+    }, [state, token])
+  );
+
   const fetchUserMatches = async () => {
+    console.log("Fetching user matches");
     setLoading(true);
     const response = await axiosGet('/api/users/me/matches', token);
     if (response.error) {
@@ -121,16 +133,16 @@ export default function LikeScreen() {
     interactMatch();
   }
 
-  const openProposal = (match: MatchData) => {
-    if (match.proposal.type == 1 && user?.profile?.user_goal_type == 2) {
-      // Load CV of the user matched
+  const openProposal = (match: MatchData, method="default") => {
+    if (method == "received") {
+      // Load received match
       fetchProposal(match.user.profile?.proposal.id as any).then(() => {
         setModalVisible(true);
         StatusBar.setHidden(true);
       });
     }
     else {
-      // Load Announcement proposal
+      // Load sent match
       fetchProposal(match.proposal.id).then(() => {
         setModalVisible(true);
         StatusBar.setHidden(true);
@@ -223,7 +235,8 @@ export default function LikeScreen() {
                 onPress={() => setTabSelected(1)}
               >
                 <ThemedText styles={{textAlign: 'center'}} variant={tabSelected == 1 ? 'tab_selected' : 'tab'}>
-                  Match envoyé
+                  Like envoyé
+                  <Text style={{ fontSize: 15, marginLeft: 10 }}>x{matches.length}</Text>
                 </ThemedText>
               </TouchableOpacity>
 
@@ -235,7 +248,8 @@ export default function LikeScreen() {
                   textAlign: 'center',
                   borderLeftWidth: 0,
                 }} variant={tabSelected == 2 ? 'tab_selected' : 'tab'} color='title1'>
-                  Match reçu
+                  Like reçu
+                  <Text style={{ fontSize: 15, marginLeft: 10 }}>x{matchesReceived.length}</Text>
                 </ThemedText>
               </TouchableOpacity>
             </View>

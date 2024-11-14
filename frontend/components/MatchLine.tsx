@@ -13,7 +13,7 @@ import LineBreak from "./LineBreak";
 interface Props extends ViewProps {
   match: MatchData;
   method?: "default" | "received";
-  onOpen: (match: MatchData) => void;
+  onOpen: (match: MatchData, method: Props['method']) => void;
   onRemoveMatch: (proposalId: number) => void;
   onInteractMatch: (matchId: number, status: number) => void;
 };
@@ -39,21 +39,21 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
   }
 
   return (
-    <TouchableOpacity
-      onPress={() => onOpen(match)}
-    >
-      <View style={[
-        styles.line,
-        status == 1 ? (
-          styles.linePending
-        ) : status == 2 ? (
-          styles.lineAccepted
-        ) : (
-          styles.lineRejected
-        ),
-      ]}>
+    <View style={[
+      styles.line,
+      status == 1 ? (
+        styles.linePending
+      ) : status == 2 ? (
+        styles.lineAccepted
+      ) : (
+        styles.lineRejected
+      ),
+    ]}>
 
-        <View style={[styles.lineLeft]}>
+      <View style={[styles.lineLeft]}>
+        <TouchableOpacity
+          onPress={() => onOpen(match, "default")}
+        >
           <View
             style={{
               position: 'absolute',
@@ -93,6 +93,11 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
                 )
             }}>#{match.id}</Text>
           </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => onOpen(match, method)}
+        >
           <View style={[styles.lineTags]}>
             {match.proposal.tags.map((tag) => (
               <ThemedText
@@ -135,52 +140,52 @@ const MatchLine = ({ match, method = "default", onOpen, onRemoveMatch, onInterac
               </>
             )}
           </ThemedText>
-        </View>
+        </TouchableOpacity>
+      </View>
 
-        <View style={[styles.lineRight]}>
-          <View style={[styles.interactionBtns]}>
-            {method == "received" && (
-              <>
-                {status == 1 && (
-                  <>
-                    <TouchableOpacity
-                      onPress={() => onLike()}
-                    >
-                      <Fontisto name="like" size={30} color="white"
-                        style={{ flex: 1, width: "100%" }}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => onDislike()}
-                    >
-                    <Fontisto name="dislike" size={30} color="white"
+      <View style={[styles.lineRight]}>
+        <View style={[styles.interactionBtns]}>
+          {method == "received" && (
+            <>
+              {status == 1 && (
+                <>
+                  <TouchableOpacity
+                    onPress={() => onLike()}
+                  >
+                    <Fontisto name="like" size={30} color="white"
                       style={{ flex: 1, width: "100%" }}/>
-                    </TouchableOpacity>
-                  </>
-                )}
-                {status == 2 && (
-                  <Fontisto name="like" size={30} color="green"
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => onDislike()}
+                  >
+                  <Fontisto name="dislike" size={30} color="white"
                     style={{ flex: 1, width: "100%" }}/>
-                )}
-                {status == 3 && (
-                  <Fontisto name="dislike" size={30} color="red"
-                    style={{ flex: 1, width: "100%" }}/>
-                )}
-              </>
-            )}
-            
-            {method == "default" && (
-              <>
-                <TouchableOpacity
-                  onPress={() => onRemove()}
-                >
-                  <AntDesign name="closecircle" size={30} color="white" style={{ flex: 1, width: "100%" }} />
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
+                  </TouchableOpacity>
+                </>
+              )}
+              {status == 2 && (
+                <Fontisto name="like" size={30} color="green"
+                  style={{ flex: 1, width: "100%" }}/>
+              )}
+              {status == 3 && (
+                <Fontisto name="dislike" size={30} color="red"
+                  style={{ flex: 1, width: "100%" }}/>
+              )}
+            </>
+          )}
+          
+          {method == "default" && (
+            <>
+              <TouchableOpacity
+                onPress={() => onRemove()}
+              >
+                <AntDesign name="closecircle" size={30} color="white" style={{ flex: 1, width: "100%" }} />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   )
 };
 

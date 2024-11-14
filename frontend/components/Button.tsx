@@ -23,7 +23,7 @@ const Button = ({ title, onPress, variant = "button", color = "button_bg", ...re
       <ThemedText
         variant={variant}
         color={color}
-        styles={[styles.text]}
+        styles={[styles.text, rest.style]}
       >
         {title}
       </ThemedText>

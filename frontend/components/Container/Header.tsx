@@ -1,15 +1,32 @@
 // frontend/components/Container/Header.tsx
 import React from 'react';
-import { StyleSheet, Image, type TextProps, View } from 'react-native';
+import { StyleSheet, Image, type TextProps, View, TouchableWithoutFeedback } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import Row from '../Row';
+
+const LOGO_IMGS = {
+  'default': require("@/assets/images/logo.png"),
+  'easter_egg': require("@/assets/images/logo_easter_egg.png"),
+}
 
 
 type Props = TextProps & {
   children?: JSX.Element;
 };
 const Header = ({ children }: Props) => {
+  const [logo, setLogo] = React.useState(LOGO_IMGS.default);
+  const [count, setCount] = React.useState(0);
+
+  function onclick() {
+    if (count === 5) {
+      setLogo(LOGO_IMGS.easter_egg);
+      setCount(0);
+    } else {
+      setCount(count + 1);
+    }
+  }
+
   return (
     <Row style={[styles.header]}>
       <View style={[styles.headerLeft]}>
@@ -17,11 +34,13 @@ const Header = ({ children }: Props) => {
       </View>
       <View style={[styles.headerCenter]}>
         <View style={[styles.logoBgUI]} />
-          <Image
-            source={require("@/assets/images/logo.png")}
-            resizeMode='contain'
-            style={styles.logo}
-          />
+          <TouchableWithoutFeedback onPress={() => onclick()}>
+            <Image
+              source={logo}
+              resizeMode='contain'
+              style={styles.logo}
+            />
+          </TouchableWithoutFeedback>
         </View>
       <View style={[styles.headerRight]}>
         {children}

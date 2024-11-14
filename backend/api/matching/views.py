@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from backend.manager.UserProposalManager import UserManagerProposal
 from backend.permissions import HaveProfile
 
-from api.proposal.serializers import ProposalSerializer
+from api.proposal.serializers import ProposalMatchingSerializer
 from api.user.models import UserMatch
 from api.proposal.models import Proposal
 
@@ -36,7 +36,7 @@ class MatchingViewSet(
         manager = UserManagerProposal(request.user)
         proposals = manager.generate_matching()
 
-        serializer = ProposalSerializer(proposals, many=True)
+        serializer = ProposalMatchingSerializer(proposals, many=True)
 
         return Response({ "matching": serializer.data })
 

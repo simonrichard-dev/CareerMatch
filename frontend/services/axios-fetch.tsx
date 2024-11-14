@@ -138,6 +138,25 @@ export async function axiosGet(url: string, token?: string | null) {
     }
 }
 
+export async function axiosDelete(url: string, token?: string | null) {
+    try {
+        let resp: AxiosResponse<any, any>;
+        if (token) {
+            resp = await Axios.delete(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        }
+        else {
+            resp = await Axios.delete(url);
+        }
+        return handleAxiosSuccess(resp);
+    } catch (error) {
+        return handleAxiosError(error);
+    }
+}
+
 function handleAxiosSuccess(resp: AxiosResponse<any, any>) {
     return {
         status: resp.status,

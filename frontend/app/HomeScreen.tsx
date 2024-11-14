@@ -5,6 +5,7 @@ import { Video, ResizeMode } from 'expo-av';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, runOnJS } from 'react-native-reanimated';
 
 import Card, { CardFooter } from '@/components/Card';
 import ThemedText from '@/components/ThemedText';
@@ -13,7 +14,7 @@ import useAuthToken from '@/hooks/useAuthToken';
 import { API_HOST, axiosGet, axiosPost } from '@/services/axios-fetch';
 import Header from '@/components/Container/Header';
 import Section from '@/components/Container/Section';
-import { toastError } from '@/services/toast';
+import { toastError, toastSuccess } from '@/services/toast';
 import Navbar from '@/components/Container/Navbar';
 import Loading from '@/components/Loading';
 
@@ -47,6 +48,9 @@ export default function HomeScreen() {
 
   // Permissions
   useEffect(() => {
+    console.log('HomeScreen: useEffect');
+    setLoading(true);
+  
     if (state == "loaded") {
       if (token == null) {
         navigation.navigate('LoginScreen');
@@ -58,6 +62,19 @@ export default function HomeScreen() {
     }
   }, [state, token]);
 
+  // Animations
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(100);
+
+  const animatedCardStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const animatedNewCardStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  // Functions
   async function fetchMatching() {
     if (!token) return;
 
@@ -121,7 +138,16 @@ export default function HomeScreen() {
     if (inMatch) return;
     setInMatch(true);
 
+    translateX.value = withTiming(-Dimensions.get('window').width, { duration: 500, easing: Easing.out(Easing.cubic) }, () => {
+      translateX.value = 0;
+      translateY.value = 100;
+      translateY.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) });
+      runOnJS(_onMatch)();
+    });
+  }
+  function _onMatch() {
     postProposal(1).then(() => {
+      toastSuccess("Liked!");
       nextProposal();
       setInMatch(false);
     })
@@ -131,7 +157,15 @@ export default function HomeScreen() {
     if (inMatch) return;
     setInMatch(true);
 
-    postProposal(2).then(() => {
+    translateX.value = withTiming(Dimensions.get('window').width, { duration: 500, easing: Easing.out(Easing.cubic) }, () => {
+      translateX.value = 0;
+      translateY.value = 100;
+      translateY.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) });
+      runOnJS(_onUnMatch)();
+    });
+  }
+  function _onUnMatch() {
+    postProposal(1).then(() => {
       nextProposal();
       setInMatch(false);
     })
@@ -147,7 +181,7 @@ export default function HomeScreen() {
       {/* Body */}
       <Card>
         {loading ? <Loading /> : (
-          <>
+          <Animated.View style={[styles.proposalAnimated, animatedCardStyle]}>
             {proposalDisplayed ? (
             <>
             {Platform.OS === 'android' || Platform.OS === 'ios' ? (
@@ -261,11 +295,11 @@ export default function HomeScreen() {
             )}
             </>
           ) : (
-            <View style={styles.carouselItem}>
-              <ThemedText>Aucun matching pour le moment...</ThemedText>
+            <View style={styles.item}>
+              <ThemedText variant='title1' styles={{ marginTop: "5%" }}>Aucun matching pour le moment...</ThemedText>
             </View>
           )}
-          </>
+          </Animated.View>
         )}
       </Card>
 
@@ -278,12 +312,14 @@ export default function HomeScreen() {
               onPress={() => onMatch()}
               variant="button"
               color="button"
+              style={{ fontSize: 30, borderColor: '#00ffd75c', borderWidth: 5 }}
             />
             <Button
               title="Je Dislike"
               onPress={() => onUnMatch()}
               variant="button"
               color="button"
+              style={{ fontSize: 30, borderColor: '#ff00005c', borderWidth: 5 }}
             />
           </>
         )}
@@ -327,6 +363,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  item: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalCloseButton: {
     width: '100%',
     height: '100%',
@@ -351,5 +391,10 @@ const styles = StyleSheet.create({
   proposalPCPart: {
     flex: 1,
     width: "50%",
+  },
+
+  proposalAnimated: {
+    flex: 1,
+    width: "100%",
   }
 });
