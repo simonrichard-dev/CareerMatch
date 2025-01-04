@@ -103,7 +103,7 @@ export default function LoginScreen() {
       {/* Footer */}
       <CardFooter>
         <Button
-          title="SE CONNECTER"
+          title="CONTINUER"
           onPress={() => handleLogin()}
           variant="button"
           color="button"

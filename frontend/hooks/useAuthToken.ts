@@ -14,6 +14,8 @@ type NavigationProp = StackNavigationProp<{
   ProfilScreen: any;
   CreateProposalScreen: any;
 }>;
+
+
 export default function useAuthToken() {
   const navigation = useNavigation<NavigationProp>();
 
@@ -37,8 +39,7 @@ export default function useAuthToken() {
       if (response && response.data) {
         setUser(response.data);
         setToken(storedToken);
-      }
-      else {
+      } else {
         setUser(null);
         setToken(null); // Token invalid
       }

@@ -3,8 +3,12 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Fontisto from '@expo/vector-icons/Fontisto';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from 'expo-router';
+import useAuthToken from '@/hooks/useAuthToken';
+
+
 
 import HeaderButton from './HeaderButton';
 
@@ -20,12 +24,18 @@ type Props = {
 };
 const Navbar = ({ page }: Props) => {
     const navigation = useNavigation<NavigationProp>();
+    const {deleteToken } = useAuthToken();
+
+    const handleLogout = () => {
+        deleteToken();
+        navigation.navigate('LoginScreen');
+    };
 
     return (
         <>
             {page != 'home' && (
                 <HeaderButton
-                    title={(<><Fontisto name="home" size={24} color="white" /> Home</>)}
+                    title={(<><Fontisto name="home" size={20} color="white" /> Home</>)}
                     onPress={() => {
                         navigation.navigate('HomeScreen');
                     }}
@@ -33,20 +43,28 @@ const Navbar = ({ page }: Props) => {
             )}
             {page != 'profil' && (
                 <HeaderButton
-                    title={(<><FontAwesome name="user" size={24} color="white" /> Profil</>)}
+                    title={(<><FontAwesome name="user" size={20} color="white" /> Profil</>)}
                     onPress={() => {
                         navigation.navigate('ProfilScreen');
                     }}
                 />
             )}
-            {page != 'like' && (
+           {page != 'like' && (
                 <HeaderButton
-                    title={(<><AntDesign name="like1" size={24} color="white" /> Liked</>)}
+                    title={(<><AntDesign name="like1" size={20} color="white" /> Liked</>)}
                     onPress={() => {
                         navigation.navigate('LikeScreen');
                     }}
                 />
             )}
+            {/*page != 'like' && */(
+                <HeaderButton
+                    title={(<><MaterialIcons name="logout" size={24} color="white" /> Logout</>)}
+                    onPress={() => {
+                        handleLogout();
+                    }}
+                />
+            )}            
         </>
     );
 };

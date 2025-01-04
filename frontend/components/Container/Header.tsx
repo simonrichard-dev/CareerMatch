@@ -57,17 +57,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
+
   headerLeft: {
-    flex: 1
+    flex: 1,
   },
+
   headerCenter: {
     display: "flex",
     alignItems: "center",
   },
+
   headerRight: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    flex: 1
+    flex: 1,
   },
 
   logo: {
@@ -82,11 +85,12 @@ const styles = StyleSheet.create({
     borderRadius: hp('16%'),
     top: hp('-1%'),
   },
-  button: {
-    padding: 10,
-    width: 'auto',
-    marginTop: 10,
-    marginBottom: 10,
-  },
+
+  // button: {
+  //   padding: 10,
+  //   width: 'auto',
+  //   marginTop: 10,
+  //   marginBottom: 10,
+  // },
 });
 export default Header;

@@ -1,4 +1,4 @@
-// frontend/app/screens/ProfilScreen.tsx
+// frontend/app/ProfilScreen.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Image, Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from 'expo-router';

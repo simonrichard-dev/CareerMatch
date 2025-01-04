@@ -1,4 +1,4 @@
-// frontend/app/screens/LikeScreen.tsx
+// frontend/app/LikeScreen.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Text, Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from 'expo-router';

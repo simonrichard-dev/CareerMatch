@@ -307,19 +307,19 @@ export default function HomeScreen() {
       <CardFooter style={styles.footer}>
         {proposalDisplayed && (
           <>
+          <Button
+              title="Je Dislike"
+              onPress={() => onUnMatch()}
+              variant="button"
+              color="button"
+              style={{ fontSize: 30, borderColor: '#ff00005c', borderWidth: 5 }}
+            />
             <Button
               title="Je Like"
               onPress={() => onMatch()}
               variant="button"
               color="button"
               style={{ fontSize: 30, borderColor: '#00ffd75c', borderWidth: 5 }}
-            />
-            <Button
-              title="Je Dislike"
-              onPress={() => onUnMatch()}
-              variant="button"
-              color="button"
-              style={{ fontSize: 30, borderColor: '#ff00005c', borderWidth: 5 }}
             />
           </>
         )}

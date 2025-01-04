@@ -1,4 +1,4 @@
-// frontend/app/screens/LoginScreen.tsx
+// frontend/app/screens/RegisterScreen.tsx
 import React, { useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { StackNavigationProp } from '@react-navigation/stack';

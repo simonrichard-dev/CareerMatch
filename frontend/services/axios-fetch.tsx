@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
-export const API_HOST = 'http://192.168.1.36:8000/'; //'http://10.1.3.248:8000/' holberton paris, //'http://192.168.1.13:8000/' vanves, // 'http://172.20.112.1:8000' center parcs;
+export const API_HOST = 'http://192.168.1.11:8000/'; //'http://10.1.3.248:8000/' holberton paris, //'http://192.168.1.11:8000/' vanves, // 'http://10.10.242.122:8000' carizy;
 
 export let Axios = axios.create({
     baseURL: API_HOST,
