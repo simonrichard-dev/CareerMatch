@@ -30,18 +30,18 @@ const Header = ({ children }: Props) => {
   return (
     <Row style={[styles.header]}>
       <View style={[styles.headerLeft]}>
-        
+      {children}
       </View>
       <View style={[styles.headerCenter]}>
         <View style={[styles.logoBgUI]} />
-          <TouchableWithoutFeedback onPress={() => onclick()}>
-            <Image
-              source={logo}
-              resizeMode='contain'
-              style={styles.logo}
-            />
-          </TouchableWithoutFeedback>
-        </View>
+        <TouchableWithoutFeedback onPress={() => onclick()}>
+          <Image
+            source={logo}
+            resizeMode='contain'
+            style={styles.logo}
+          />
+        </TouchableWithoutFeedback>
+      </View>
       <View style={[styles.headerRight]}>
         {children}
       </View>
@@ -59,18 +59,25 @@ const styles = StyleSheet.create({
   },
 
   headerLeft: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
     flex: 1,
+    backgroundColor: '#2ecc71',
   },
 
   headerCenter: {
     display: "flex",
     alignItems: "center",
+    backgroundColor: '#ff5733',
+
   },
 
   headerRight: {
     flexDirection: "row",
     justifyContent: "flex-start",
     flex: 1,
+    backgroundColor: '#2e86c1',
+
   },
 
   logo: {
@@ -86,11 +93,5 @@ const styles = StyleSheet.create({
     top: hp('-1%'),
   },
 
-  // button: {
-  //   padding: 10,
-  //   width: 'auto',
-  //   marginTop: 10,
-  //   marginBottom: 10,
-  // },
 });
 export default Header;

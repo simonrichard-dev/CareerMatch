@@ -33,6 +33,14 @@ const Navbar = ({ page }: Props) => {
 
     return (
         <>
+            {/*page != 'like' && */(
+                <HeaderButton
+                    title={(<><MaterialIcons name="logout" size={24} color="white" /> Logout</>)}
+                    onPress={() => {
+                        handleLogout();
+                }}
+                />
+             )}  
             {page != 'home' && (
                 <HeaderButton
                     title={(<><Fontisto name="home" size={20} color="white" /> Home</>)}
@@ -57,14 +65,7 @@ const Navbar = ({ page }: Props) => {
                     }}
                 />
             )}
-            {/*page != 'like' && */(
-                <HeaderButton
-                    title={(<><MaterialIcons name="logout" size={24} color="white" /> Logout</>)}
-                    onPress={() => {
-                        handleLogout();
-                    }}
-                />
-            )}            
+          
         </>
     );
 };
