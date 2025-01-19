@@ -1,17 +1,17 @@
 // frontend/components/Container/HeaderButton.tsx
 
-
 import React from 'react';
-import { useWindowDimensions, Platform, type TextProps } from 'react-native';
-
+import { useWindowDimensions, Platform, StyleProp, StyleSheet, type TextProps, ViewStyle } from 'react-native';
 import Button from '../Button';
 
 type Props = TextProps & {
   title: string | JSX.Element;
   onPress: () => void;
-};
+  position?: 'left' | 'right';
+  style?: StyleProp<ViewStyle>;
+}
 
-const HeaderButton = ({ title, onPress }: Props) => {
+const HeaderButton = ({ title, onPress, position = 'right', ...rest }: Props) => {
   const { width, height } = useWindowDimensions();
   const isPortrait = height > width;
   const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
@@ -28,7 +28,27 @@ const HeaderButton = ({ title, onPress }: Props) => {
         </>
       );
 
-  return <Button title={adjustedTitle} onPress={onPress} variant="button" color="button" />;
+  return (
+    <Button 
+      title={adjustedTitle}
+      onPress={onPress}
+      variant="button"
+      color="button"
+      {...rest}
+    />
+  );
 };
+
+const styles = StyleSheet.create({
+  base: {
+    marginHorizontal: 8,
+  },
+  left: {
+    alignSelf: 'flex-start',
+  },
+  right: {
+    alignSelf: 'flex-end',
+  },
+});
 
 export default HeaderButton;

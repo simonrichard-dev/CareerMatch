@@ -1,10 +1,10 @@
 // frontend/components/Button.tsx
 import React from 'react';
-import { StyleSheet, TouchableOpacity, type TextProps } from 'react-native';
-
+import { StyleSheet, TouchableOpacity, type TextProps, ViewStyle } from 'react-native';
 import { Colors } from "@/constants/Colors";
 import { Styles } from "@/constants/Styles";
 import ThemedText from './ThemedText';
+
 
 
 type Props = TextProps & {
@@ -12,6 +12,7 @@ type Props = TextProps & {
   onPress: () => void;
   variant?: keyof typeof Styles;
   color?: keyof typeof Colors;
+  style?: ViewStyle | ViewStyle[];
 };
 
 const Button = ({ title, onPress, variant = "button", color = "button_bg", ...rest }: Props) => {

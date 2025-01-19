@@ -8,8 +8,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from 'expo-router';
 import useAuthToken from '@/hooks/useAuthToken';
 
-
-
 import HeaderButton from './HeaderButton';
 
 type NavigationProp = StackNavigationProp<{
@@ -36,37 +34,35 @@ const Navbar = ({ page }: Props) => {
             {/*page != 'like' && */(
                 <HeaderButton
                     title={(<><MaterialIcons name="logout" size={24} color="white" /> Logout</>)}
-                    onPress={() => {
-                        handleLogout();
-                }}
+                    onPress={handleLogout}
+                    position='left'
                 />
              )}  
             {page != 'home' && (
                 <HeaderButton
                     title={(<><Fontisto name="home" size={20} color="white" /> Home</>)}
-                    onPress={() => {
-                        navigation.navigate('HomeScreen');
-                    }}
+                    onPress={() => navigation.navigate('HomeScreen')}
+                    position='right'
                 />
             )}
             {page != 'profil' && (
                 <HeaderButton
                     title={(<><FontAwesome name="user" size={20} color="white" /> Profil</>)}
-                    onPress={() => {
-                        navigation.navigate('ProfilScreen');
-                    }}
+                    onPress={() => navigation.navigate('ProfilScreen')}
+                    position='right'
                 />
             )}
            {page != 'like' && (
                 <HeaderButton
                     title={(<><AntDesign name="like1" size={20} color="white" /> Liked</>)}
-                    onPress={() => {
-                        navigation.navigate('LikeScreen');
-                    }}
+                    onPress={() => navigation.navigate('LikeScreen')}
+                    position='right'
+
                 />
             )}
           
         </>
     );
 };
+
 export default Navbar;
