@@ -7,11 +7,10 @@ import Button from '../Button';
 type Props = TextProps & {
   title: string | JSX.Element;
   onPress: () => void;
-  position?: 'left' | 'right';
   style?: StyleProp<ViewStyle>;
 }
 
-const HeaderButton = ({ title, onPress, position = 'right', ...rest }: Props) => {
+const HeaderButton = ({ title, onPress}: Props) => {
   const { width, height } = useWindowDimensions();
   const isPortrait = height > width;
   const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
@@ -34,7 +33,6 @@ const HeaderButton = ({ title, onPress, position = 'right', ...rest }: Props) =>
       onPress={onPress}
       variant="button"
       color="button"
-      {...rest}
     />
   );
 };

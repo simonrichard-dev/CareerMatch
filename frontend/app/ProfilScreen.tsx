@@ -326,6 +326,8 @@ export default function PersonalInfoScreen() {
                 variant={userGoal === 1 ? "button_selected" : "button"}
                 color={userGoal === 1 ? "button_selected" : "button"}
               />
+            </View>
+            <View style={[ styles.goalButtons ]}>
               <Button
                 title="Partager mon CV"
                 onPress={() => setUserGoal(2)}
@@ -343,7 +345,6 @@ export default function PersonalInfoScreen() {
                 <ProposalLine
                   proposal={proposal}
                   onRemoveProposal={onRemoveProposal}
-                  // onInteractMatch={onInteractMatch}
                   onOpen={openProposal}
                   key={proposal.id}
                 />
@@ -391,6 +392,8 @@ const styles = StyleSheet.create({
   },
   goalButtons: {
     flexDirection: 'row',
+    paddingTop: 0,
+    paddingBottom: 0,
   },
 
   tabsHeader: {

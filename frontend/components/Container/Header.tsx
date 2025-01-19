@@ -2,21 +2,38 @@
 import React from 'react';
 import { StyleSheet, Image, type TextProps, View, TouchableWithoutFeedback } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { useNavigation } from 'expo-router';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Row from '../Row';
+import Button from '../Button';
+import HeaderButton from './HeaderButton';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import useAuthToken from '@/hooks/useAuthToken';
+
 
 const LOGO_IMGS = {
   'default': require("@/assets/images/logo.png"),
   'easter_egg': require("@/assets/images/logo_easter_egg.png"),
 }
 
-
 type Props = TextProps & {
   children?: JSX.Element;
 };
+
+type NavigationProp = StackNavigationProp<{
+  LoginScreen: any;
+}>;
+
 const Header = ({ children }: Props) => {
   const [logo, setLogo] = React.useState(LOGO_IMGS.default);
   const [count, setCount] = React.useState(0);
+  const navigation = useNavigation<NavigationProp>();
+  
+  const {deleteToken } = useAuthToken();
+  const handleLogout = () => {
+    deleteToken();
+    navigation.navigate('LoginScreen');
+  };
 
   function onclick() {
     if (count === 5) {
@@ -30,7 +47,10 @@ const Header = ({ children }: Props) => {
   return (
     <Row style={[styles.header]}>
       <View style={[styles.headerLeft]}>
-      {children}
+        <HeaderButton
+          title={(<><MaterialIcons name='logout' size={24} colo="white"/>Logout</>)}
+          onPress={handleLogout}
+        />
       </View>
       <View style={[styles.headerCenter]}>
         <View style={[styles.logoBgUI]} />
@@ -60,24 +80,21 @@ const styles = StyleSheet.create({
 
   headerLeft: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     flex: 1,
-    backgroundColor: '#2ecc71',
+    paddingTop: 20,
   },
 
   headerCenter: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: '#ff5733',
-
   },
 
   headerRight: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "flex-end",
     flex: 1,
-    backgroundColor: '#2e86c1',
-
+    paddingTop: 20,
   },
 
   logo: {
